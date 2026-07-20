@@ -172,6 +172,26 @@
             <option value="vendido">Vendido</option>
           </select>
         </div>
+        <div class="field">
+          <label for="f-cidade">Cidade</label>
+          <input type="text" id="f-cidade" placeholder="Ex: Vitória">
+        </div>
+        <div class="field">
+          <label for="f-finalidade">Finalidade</label>
+          <select id="f-finalidade">
+            <option value="venda">Venda</option>
+            <option value="aluguel">Aluguel</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="f-destaque">Selo de destaque (opcional)</label>
+          <select id="f-destaque">
+            <option value="nenhum">Nenhum</option>
+            <option value="semana">🏆 Destaque da Semana</option>
+            <option value="oportunidade">🏅 Oportunidade</option>
+            <option value="visitado">🔥 Mais visitado</option>
+          </select>
+        </div>
         <div class="field full">
           <label for="f-endereco">Endereço / Bairro</label>
           <input type="text" id="f-endereco" placeholder="Ex: Praia do Canto, Vitória - ES">
@@ -180,9 +200,18 @@
           <label for="f-descricao">Descrição</label>
           <textarea id="f-descricao" rows="4" placeholder="Detalhes do imóvel, condições, diferenciais..."></textarea>
         </div>
+        <div class="field">
+          <label for="f-video">Vídeo (link do YouTube, opcional)</label>
+          <input type="text" id="f-video" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="field">
+          <label for="f-tour">Tour virtual 360° (link, opcional)</label>
+          <input type="text" id="f-tour" placeholder="https://...">
+        </div>
         <div class="field full">
           <label for="f-fotos">Fotos</label>
           <input type="file" id="f-fotos" accept="image/*" multiple>
+          <p style="font-size:0.76rem; color:var(--slate); margin-top:6px;">Dica: use fotos na mesma proporção (ex: 4:3), boa iluminação e resolução mínima de 1200px de largura — isso deixa o portfólio muito mais profissional.</p>
           <div class="photo-preview-list" id="photoPreviewList"></div>
         </div>
       </div>
@@ -350,8 +379,13 @@ function openEdit(id, d){
   document.getElementById('f-area').value = d.area || '';
   document.getElementById('f-quartos').value = d.quartos || '';
   document.getElementById('f-status').value = d.status || 'disponivel';
+  document.getElementById('f-cidade').value = d.cidade || '';
+  document.getElementById('f-finalidade').value = d.finalidade || 'venda';
+  document.getElementById('f-destaque').value = d.destaque || 'nenhum';
   document.getElementById('f-endereco').value = d.endereco || '';
   document.getElementById('f-descricao').value = d.descricao || '';
+  document.getElementById('f-video').value = d.videoUrl || '';
+  document.getElementById('f-tour').value = d.tourUrl || '';
   photoInput.value = '';
   renderPhotoPreviews();
   modalStatus.className = 'modal-status';
@@ -401,8 +435,13 @@ listingForm.addEventListener('submit', async (e) => {
     area: document.getElementById('f-area').value.trim(),
     quartos: document.getElementById('f-quartos').value.trim(),
     status: document.getElementById('f-status').value,
+    cidade: document.getElementById('f-cidade').value.trim(),
+    finalidade: document.getElementById('f-finalidade').value,
+    destaque: document.getElementById('f-destaque').value,
     endereco: document.getElementById('f-endereco').value.trim(),
     descricao: document.getElementById('f-descricao').value.trim(),
+    videoUrl: document.getElementById('f-video').value.trim(),
+    tourUrl: document.getElementById('f-tour').value.trim(),
   };
 
   try{

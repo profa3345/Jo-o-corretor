@@ -3,10 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lima Buarque | Seguros, Previdência & Imóveis</title>
+<title>Lima Buarque | Seguros, Previdência e Imóveis em Vitória-ES e Campos-RJ</title>
+<meta name="description" content="Corretora de seguros, previdência privada e imóveis desde 2016. Registro SUSEP e CRECI. Seguros de vida, previdência VGBL/PGBL, consórcio e corretagem de imóveis em Vitória-ES e Campos dos Goytacazes-RJ.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.limabuarque.com.br/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lima Buarque">
+<meta property="og:title" content="Lima Buarque | Seguros, Previdência e Imóveis">
+<meta property="og:description" content="Corretora de seguros, previdência privada e imóveis desde 2016. Registro SUSEP e CRECI, atendimento em Vitória-ES e Campos dos Goytacazes-RJ.">
+<meta property="og:url" content="https://www.limabuarque.com.br/">
+<meta property="og:locale" content="pt_BR">
+<!-- og:image: adicione a URL de uma imagem 1200x630px de divulgação assim que tiver uma -->
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lima Buarque | Seguros, Previdência e Imóveis">
+<meta name="twitter:description" content="Corretora de seguros, previdência privada e imóveis desde 2016. Registro SUSEP e CRECI.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  "name": "Lima Buarque Corretora de Seguros e Previdência",
+  "url": "https://www.limabuarque.com.br/",
+  "areaServed": ["Vitória, ES", "Campos dos Goytacazes, RJ"],
+  "address": [
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "Av. Nossa Senhora da Penha, 2796, Santa Luíza",
+      "addressLocality": "Vitória",
+      "addressRegion": "ES",
+      "postalCode": "29045-402",
+      "addressCountry": "BR"
+    },
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "Rua Barão do Amazonas, 111, Sala 406, Centro",
+      "addressLocality": "Campos dos Goytacazes",
+      "addressRegion": "RJ",
+      "postalCode": "28010-030",
+      "addressCountry": "BR"
+    }
+  ],
+  "telephone": "+55-0800-999-3333",
+  "foundingDate": "2016",
+  "sameAs": [
+    "https://www.facebook.com/limabuarquecorretora",
+    "https://www.instagram.com/limabuarquecorretor/"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quais serviços a Lima Buarque oferece?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Seguros de vida profissional, consórcio de imóveis, previdência privada (VGBL/PGBL), responsabilidade civil profissional, seguro saúde e, mais recentemente, corretagem de imóveis com registro CRECI." }
+    },
+    {
+      "@type": "Question",
+      "name": "A Lima Buarque atende em quais cidades?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Atendemos com escritórios em Vitória, ES e Campos dos Goytacazes, RJ, além de atendimento remoto para outras regiões." }
+    },
+    {
+      "@type": "Question",
+      "name": "É preciso pagar para simular um orçamento?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Não. A simulação de orçamento é gratuita e sem compromisso." }
+    }
+  ]
+}
+</script>
+
 <style>
   :root{
     --navy:#1B2A4A;
@@ -62,43 +136,60 @@
   .nav-cta:hover{transform:translateY(-2px); box-shadow:0 12px 24px -10px rgba(15,24,48,0.45);}
   @media(max-width:960px){ .navlinks{display:none;} }
 
-  header.hero{position:relative; padding:64px 0 70px; overflow:hidden;}
-  header.hero::before{
-    content:""; position:absolute; inset:0;
-    background: radial-gradient(650px 420px at 12% 15%, var(--gold-soft), transparent 60%),
-                radial-gradient(650px 420px at 88% 25%, var(--teal-soft), transparent 60%);
-    pointer-events:none;
+  header.hero{
+    position:relative; height:92vh; min-height:620px; max-height:880px; overflow:hidden;
+    display:flex; align-items:flex-end;
   }
-  .hero-video{
-    border-radius:18px; overflow:hidden; margin-bottom:36px; border:1px solid var(--line);
-    box-shadow:0 24px 48px -28px rgba(15,24,48,0.28); position:relative; max-height:400px;
+  .hero-bg-video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;}
+  .hero-overlay{
+    position:absolute; inset:0; z-index:2;
+    background:
+      linear-gradient(0deg, rgba(10,15,28,0.92) 0%, rgba(10,15,28,0.55) 42%, rgba(10,15,28,0.25) 68%, rgba(10,15,28,0.35) 100%);
   }
-  .hero-video video{width:100%; height:100%; max-height:400px; object-fit:cover; display:block;}
-  .eyebrow{
+  header.hero .wrap{position:relative; z-index:3; padding-bottom:64px; width:100%;}
+  .hero-eyebrow{
     display:inline-flex; align-items:center; gap:10px; font-family:'IBM Plex Mono'; font-size:0.74rem;
-    letter-spacing:0.08em; text-transform:uppercase; color:var(--slate); border:1px solid var(--line);
-    background:#fff; padding:7px 14px; border-radius:100px; margin-bottom:22px;
+    letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.08); backdrop-filter:blur(6px); padding:7px 14px; border-radius:100px; margin-bottom:22px;
   }
-  header.hero h1{font-size:clamp(2rem, 4.4vw, 3.4rem); max-width:760px; line-height:1.14;}
-  header.hero .lede{max-width:600px; margin-top:18px; font-size:1.04rem; color:var(--slate);}
-  .hero-actions{display:flex; align-items:center; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  header.hero h1{font-size:clamp(2.1rem, 4.6vw, 3.6rem); max-width:760px; line-height:1.14; color:#fff;}
+  header.hero .lede{max-width:560px; margin-top:18px; font-size:1.06rem; color:rgba(255,255,255,0.78);}
+  .hero-checklist{display:flex; flex-wrap:wrap; gap:12px 28px; margin-top:26px;}
+  .hero-checklist span{display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:500; color:#fff;}
+  .hero-checklist span::before{
+    content:"✓"; width:20px; height:20px; border-radius:50%; background:var(--gold); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:0.68rem; flex-shrink:0;
+  }
+  .hero-actions{display:flex; align-items:center; gap:14px; margin-top:34px; flex-wrap:wrap;}
   .btn{padding:14px 26px; border-radius:100px; font-weight:600; font-size:0.94rem; display:inline-flex; align-items:center; gap:8px; transition:all .2s; cursor:pointer; border:none;}
-  .btn-primary{background:var(--navy-deep); color:#fff;}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px -10px rgba(15,24,48,0.4);}
-  .btn-ghost{border:1px solid var(--line); color:var(--navy-deep); background:#fff;}
-  .btn-ghost:hover{border-color:var(--navy-deep);}
+  .btn-primary{background:var(--gold); color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px -10px rgba(184,147,78,0.6);}
+  .btn-ghost{border:1px solid rgba(255,255,255,0.35); color:#fff; background:rgba(255,255,255,0.06); backdrop-filter:blur(6px);}
+  .btn-ghost:hover{border-color:#fff; background:rgba(255,255,255,0.14);}
+  .btn-dark{border:1px solid var(--line); color:var(--navy-deep); background:#fff;}
+  .btn-dark:hover{border-color:var(--navy-deep);}
 
-  .switch{display:inline-flex; padding:5px; border-radius:100px; background:#fff; border:1px solid var(--line); gap:4px;}
-  .switch button{font-family:'IBM Plex Mono'; font-size:0.78rem; padding:9px 18px; border-radius:100px; background:transparent; border:none; color:var(--slate); cursor:pointer; transition:all .25s;}
-  .switch button.active{background:var(--accent); color:#fff; font-weight:600;}
+  .scroll-cue{
+    position:absolute; bottom:22px; left:50%; transform:translateX(-50%); z-index:3; color:rgba(255,255,255,0.7);
+    display:flex; flex-direction:column; align-items:center; gap:6px; font-family:'IBM Plex Mono'; font-size:0.66rem;
+    letter-spacing:0.08em; text-transform:uppercase; animation:bounce 2.2s infinite;
+  }
+  @keyframes bounce{0%,100%{transform:translate(-50%,0);} 50%{transform:translate(-50%,6px);}}
+  @media(max-width:700px){ header.hero{height:auto; min-height:0; padding:120px 0 56px;} header.hero .wrap{padding-bottom:0;} .scroll-cue{display:none;} }
 
-  .hero-divider{display:block;}
-  @media(max-width:700px){ .hero-divider{display:none;} }
-
-  .trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:24px 0; background:#fff;}
-  .trust .wrap{display:flex; flex-wrap:wrap; gap:32px; justify-content:space-between; align-items:center;}
-  .trust-item{display:flex; align-items:center; gap:10px; font-size:0.86rem; color:var(--slate);}
-  .trust-item .num{font-family:'IBM Plex Mono'; color:var(--navy-deep); font-weight:500;}
+  .social-proof{background:var(--navy-deep); color:#fff; padding:48px 0;}
+  .proof-stars{color:var(--gold); font-size:1.1rem; letter-spacing:2px; margin-bottom:28px; display:flex; align-items:center; gap:12px;}
+  .proof-stars span{color:rgba(255,255,255,0.6); font-size:0.85rem; letter-spacing:normal; font-family:'Inter';}
+  .proof-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; border-top:1px solid rgba(255,255,255,0.12); border-bottom:1px solid rgba(255,255,255,0.12); padding:32px 0;}
+  .proof-item{text-align:left;}
+  .proof-num, .proof-num-text{font-family:'Space Grotesk'; font-size:2rem; font-weight:700; color:#fff;}
+  .proof-num-text{font-size:1.3rem;}
+  .proof-label{color:rgba(255,255,255,0.55); font-size:0.84rem; margin-top:6px;}
+  .proof-partners{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px;}
+  .proof-partners-label{font-family:'IBM Plex Mono'; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4);}
+  .partner-badge{border:1px solid rgba(255,255,255,0.18); border-radius:100px; padding:7px 16px; font-size:0.8rem; color:rgba(255,255,255,0.8);}
+  .proof-note{color:rgba(255,255,255,0.35); font-size:0.76rem; margin-top:18px;}
+  @media(max-width:800px){ .proof-grid{grid-template-columns:1fr 1fr;} }
 
   .section{padding:100px 0;}
   .section-head{max-width:680px; margin-bottom:56px;}
@@ -115,11 +206,32 @@
   .diff-list li::before{content:"—"; color:var(--gold); flex-shrink:0;}
   .diff-list li:last-child{border-bottom:1px solid var(--line);}
 
+  /* FILTER BAR */
+  .filter-bar{display:flex; align-items:end; gap:14px; flex-wrap:wrap; background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:40px;}
+  .filter-field{display:flex; flex-direction:column; gap:6px; min-width:140px; flex:1;}
+  .filter-field label{font-size:0.76rem; color:var(--slate); font-weight:500;}
+  .filter-field select, .filter-field input{padding:11px 12px; border:1px solid var(--line); border-radius:9px; font-family:'Inter'; font-size:0.88rem; background:#fff; color:var(--navy-deep);}
+  .filter-field select:focus, .filter-field input:focus{outline:none; border-color:var(--gold);}
+
+  /* SKELETON LOADING */
+  .skeleton-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:24px;}
+  .skeleton-card{aspect-ratio:4/5; border-radius:18px; background:linear-gradient(90deg, var(--line) 25%, #f0f1f5 37%, var(--line) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite;}
+  @keyframes shimmer{0%{background-position:100% 0;} 100%{background-position:0 0;}}
+
+  /* FEATURED BADGES */
+  .imovel-tag{position:absolute; top:12px; right:12px; font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:100px; display:flex; align-items:center; gap:5px; color:#fff;}
+  .imovel-tag.semana{background:#B8934E;}
+  .imovel-tag.oportunidade{background:#1E8A79;}
+  .imovel-tag.visitado{background:#C24A4A;}
+  .imovel-card{cursor:pointer;}
+
   .imoveis-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:24px;}
   .imovel-card{background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; transition:transform .2s, box-shadow .2s;}
   .imovel-card:hover{transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(15,24,48,0.18);}
-  .imovel-thumb{aspect-ratio:4/3; background:var(--paper) center/cover no-repeat; position:relative; display:flex; align-items:center; justify-content:center; color:var(--slate); font-size:0.82rem;}
-  .imovel-status{position:absolute; top:12px; left:12px; font-family:'IBM Plex Mono'; font-size:0.68rem; padding:5px 11px; border-radius:100px; text-transform:uppercase; letter-spacing:0.04em;}
+  .imovel-thumb{aspect-ratio:4/3; background:var(--paper); position:relative; overflow:hidden;}
+  .imovel-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .imovel-thumb .noimg{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--slate); font-size:0.82rem;}
+  .imovel-status{position:absolute; top:12px; left:12px; font-family:'IBM Plex Mono'; font-size:0.68rem; padding:5px 11px; border-radius:100px; text-transform:uppercase; letter-spacing:0.04em; z-index:2;}
   .imovel-status.disponivel{background:var(--teal-soft); color:var(--teal);}
   .imovel-status.reservado{background:var(--gold-soft); color:var(--gold);}
   .imovel-status.vendido{background:rgba(194,74,74,0.1); color:#C24A4A;}
@@ -128,7 +240,27 @@
   .imovel-body .price{font-family:'IBM Plex Mono'; color:var(--gold); font-weight:600; font-size:0.95rem; margin-bottom:6px;}
   .imovel-body .meta{display:flex; gap:12px; color:var(--slate); font-size:0.82rem; margin-bottom:10px;}
   .imovel-body .addr{color:var(--slate); font-size:0.86rem; margin-bottom:14px;}
-  .imovel-body a.btn{width:100%; padding:11px; font-size:0.85rem;}
+  .imovel-body a.btn, .imovel-body button.btn{width:100%; padding:11px; font-size:0.85rem;}
+
+  /* FINANCING CALCULATOR */
+  .calc-box{display:grid; grid-template-columns:1.2fr 1fr; gap:32px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:36px; align-items:center;}
+  .calc-inputs{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .calc-inputs .btn{grid-column:1/-1;}
+  .calc-result{background:var(--navy-deep); border-radius:16px; padding:32px; text-align:center; color:#fff;}
+  .calc-result-label{font-size:0.82rem; color:rgba(255,255,255,0.6); margin-bottom:10px;}
+  .calc-result-value{font-family:'Space Grotesk'; font-size:2.2rem; font-weight:700; color:var(--gold);}
+  .calc-result-sub{font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:8px;}
+  @media(max-width:820px){ .calc-box{grid-template-columns:1fr;} .calc-inputs{grid-template-columns:1fr 1fr;} }
+
+  /* TESTIMONIALS */
+  .testimonial-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .testimonial-card{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:26px;}
+  .testimonial-stars{color:var(--gold); letter-spacing:2px; margin-bottom:14px;}
+  .testimonial-card p{color:var(--slate); font-size:0.92rem; margin-bottom:18px; font-style:italic;}
+  .testimonial-author{font-weight:600; font-size:0.9rem; color:var(--navy-deep);}
+  @media(max-width:820px){ .testimonial-grid{grid-template-columns:1fr;} }
+
+
 
   .card-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
   .service-card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:32px; transition:transform .2s, box-shadow .2s;}
@@ -223,6 +355,51 @@
   .form-status{margin-top:14px; font-size:0.88rem; text-align:center; display:none;}
   .form-status.ok{color:var(--teal); display:block;}
   .form-status.err{color:#C24A4A; display:block;}
+
+  /* FAQ */
+  .faq-list{display:flex; flex-direction:column; gap:12px; max-width:760px;}
+  .faq-item{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px;}
+  .faq-item summary{cursor:pointer; font-weight:600; color:var(--navy-deep); list-style:none; display:flex; justify-content:space-between; align-items:center;}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:"+"; color:var(--gold); font-size:1.2rem;}
+  .faq-item[open] summary::after{content:"–";}
+  .faq-item p{color:var(--slate); margin-top:12px; font-size:0.92rem; line-height:1.6;}
+
+  /* PROPERTY DETAIL MODAL */
+  .detail-box{max-width:760px; padding:0; overflow:hidden;}
+  .detail-box .modal-close{background:rgba(15,24,48,0.55); color:#fff; border:none; top:16px; right:16px; z-index:5;}
+  .detail-gallery{position:relative; aspect-ratio:16/9; background:var(--paper);}
+  .gallery-main{width:100%; height:100%;}
+  .gallery-main img{width:100%; height:100%; object-fit:cover; display:block;}
+  .gallery-nav{
+    position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:50%; border:none;
+    background:rgba(15,24,48,0.5); color:#fff; font-size:1.3rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-nav.prev{left:14px;} .gallery-nav.next{right:14px;}
+  .gallery-thumbs{display:flex; gap:8px; padding:12px 24px; overflow-x:auto;}
+  .gallery-thumbs img{width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; opacity:0.6; flex-shrink:0; border:2px solid transparent;}
+  .gallery-thumbs img.active{opacity:1; border-color:var(--gold);}
+  .detail-header{display:flex; justify-content:space-between; align-items:flex-start; padding:20px 24px 0;}
+  .detail-header h3{font-size:1.3rem; margin-bottom:6px;}
+  .detail-header .price{font-family:'IBM Plex Mono'; color:var(--gold); font-weight:600;}
+  .detail-ficha{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:20px 24px 0;}
+  .ficha-row{display:flex; justify-content:space-between; font-size:0.86rem; border-bottom:1px solid var(--line); padding-bottom:8px;}
+  .ficha-row span{color:var(--slate);}
+  .detail-descricao{padding:18px 24px 0; color:var(--slate); font-size:0.92rem; line-height:1.6;}
+  .detail-embed{margin:18px 24px 0; border-radius:12px; overflow:hidden; aspect-ratio:16/9; display:none;}
+  #detailWhats{margin-left:24px; margin-right:24px; width:calc(100% - 48px) !important;}
+  #detailSimilar{padding:0 24px 28px;}
+  #detailSimilar h4{font-size:1.05rem; margin-bottom:14px;}
+
+  /* FLOATING WHATSAPP */
+  .whatsapp-float{
+    position:fixed; bottom:24px; right:24px; z-index:150; background:#25D366; color:#fff; border-radius:100px;
+    display:flex; align-items:center; gap:10px; padding:14px 20px; box-shadow:0 12px 30px -8px rgba(37,211,102,0.6);
+    font-weight:600; font-size:0.88rem; animation:wa-pulse 2.4s infinite;
+  }
+  .whatsapp-float:hover{transform:translateY(-2px);}
+  @keyframes wa-pulse{0%,100%{box-shadow:0 12px 30px -8px rgba(37,211,102,0.6);} 50%{box-shadow:0 12px 30px -4px rgba(37,211,102,0.9);}}
+  @media(max-width:640px){ .whatsapp-float span{display:none;} .whatsapp-float{padding:14px; border-radius:50%;} }
 </style>
 </head>
 <body>
@@ -272,35 +449,43 @@
 </nav>
 
 <header class="hero">
+  <video class="hero-bg-video" autoplay muted loop playsinline>
+    <source src="video.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
   <div class="wrap">
-    <div class="hero-video">
-      <video autoplay muted loop playsinline>
-        <source src="video.mp4" type="video/mp4">
-      </video>
+    <div class="hero-eyebrow">Corretora desde 2016 · SUSEP · CRECI</div>
+    <h1>Encontre o imóvel ideal com segurança e atendimento personalizado.</h1>
+    <p class="lede">Seguros, previdência e agora também corretagem de imóveis — tudo com o mesmo especialista de confiança, do primeiro contato à entrega das chaves.</p>
+    <div class="hero-checklist">
+      <span>Compra</span><span>Venda</span><span>Financiamento</span><span>Consórcios</span><span>Seguros</span>
     </div>
-    <div class="eyebrow">Corretora desde 2016 · SUSEP · CRECI</div>
-    <h1>Proteção, previdência e patrimônio sob um só teto.</h1>
-    <p class="lede">A Lima Buarque Corretora de Seguros e Previdência agora também é corretora de imóveis. Seguro de vida, previdência privada, consórcio e, com o novo registro CRECI, acompanhamento completo na compra do seu imóvel.</p>
     <div class="hero-actions">
       <button class="btn btn-primary" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
-      <a href="#argos" class="btn btn-ghost">Ver empreendimento em lançamento</a>
-      <span style="width:1px; height:24px; background:var(--line); margin:0 2px;" class="hero-divider"></span>
-      <div class="switch" role="tablist" aria-label="Escolher área de interesse">
-        <button class="active" data-mode="gold" data-target="#servicos">Seguros & Previdência</button>
-        <button data-mode="teal" data-target="#imoveis">Imóveis</button>
-      </div>
+      <a href="#listagem-imoveis" class="btn btn-ghost">Ver imóveis disponíveis</a>
     </div>
   </div>
+  <div class="scroll-cue">Role para ver mais ↓</div>
 </header>
 
-<div class="trust">
+<section class="social-proof">
   <div class="wrap">
-    <div class="trust-item"><span class="num mono">2016</span> No mercado desde</div>
-    <div class="trust-item"><span class="num mono">SUSEP</span> Corretora de Seguros</div>
-    <div class="trust-item"><span class="num mono">CRECI</span> Corretor de Imóveis</div>
-    <div class="trust-item"><span class="num mono">ES · RJ</span> Escritórios em Vitória e Campos</div>
+    <div class="proof-stars">★★★★★ <span>Avaliação dos nossos clientes</span></div>
+    <div class="proof-grid">
+      <div class="proof-item"><div class="proof-num" data-count="500" data-suffix="+">0</div><div class="proof-label">Clientes atendidos</div></div>
+      <div class="proof-item"><div class="proof-num" data-prefix="R$ " data-count="00" data-suffix=" mi">0</div><div class="proof-label">Em imóveis negociados*</div></div>
+      <div class="proof-item"><div class="proof-num" data-count="10" data-suffix=" anos">0</div><div class="proof-label">De experiência</div></div>
+      <div class="proof-item"><div class="proof-num-text">SUSEP · CRECI</div><div class="proof-label">Registro ativo e verificável</div></div>
+    </div>
+    <div class="proof-partners">
+      <span class="proof-partners-label">Parceiros</span>
+      <span class="partner-badge">Seguradora parceira</span>
+      <span class="partner-badge">Bancos parceiros</span>
+      <span class="partner-badge">Construtora ARGOS</span>
+    </div>
+    <p class="proof-note">* Substitua pelos números reais assim que tiver os dados consolidados.</p>
   </div>
-</div>
+</section>
 
 <section class="section" id="quemsomos">
   <div class="wrap">
@@ -416,9 +601,107 @@
       <h2>Imóveis disponíveis</h2>
       <p>Anúncios atualizados diretamente por João. Fale com a gente para mais detalhes ou para agendar uma visita.</p>
     </div>
-    <div id="imoveisGrid">
-      <div style="text-align:center; padding:40px; color:var(--slate);">Carregando imóveis...</div>
+
+    <div class="filter-bar">
+      <div class="filter-field">
+        <label>Cidade</label>
+        <select id="filtroCidade"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-field">
+        <label>Finalidade</label>
+        <select id="filtroFinalidade">
+          <option value="">Comprar ou alugar</option>
+          <option value="venda">Comprar</option>
+          <option value="aluguel">Alugar</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Quartos</label>
+        <select id="filtroQuartos">
+          <option value="">Qualquer</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Valor máximo</label>
+        <input type="text" id="filtroValor" placeholder="Ex: 500000">
+      </div>
+      <button class="btn btn-dark" id="filtrarBtn" type="button">Buscar</button>
     </div>
+
+    <div id="imoveisGrid">
+      <div class="skeleton-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="financiamento" style="background:var(--paper);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Simulador</span>
+      <h2>Simule seu financiamento</h2>
+      <p>Uma estimativa rápida — a proposta final depende da análise do banco ou seguradora parceira.</p>
+    </div>
+    <div class="calc-box">
+      <div class="calc-inputs">
+        <div class="filter-field">
+          <label>Valor do imóvel (R$)</label>
+          <input type="number" id="calcValor" value="400000">
+        </div>
+        <div class="filter-field">
+          <label>Entrada (%)</label>
+          <input type="number" id="calcEntrada" value="20">
+        </div>
+        <div class="filter-field">
+          <label>Prazo (anos)</label>
+          <input type="number" id="calcPrazo" value="30">
+        </div>
+        <div class="filter-field">
+          <label>Taxa de juros ao ano (%)</label>
+          <input type="number" id="calcTaxa" value="10.5" step="0.1">
+        </div>
+        <button class="btn btn-dark" id="calcBtn" type="button">Calcular</button>
+      </div>
+      <div class="calc-result" id="calcResult">
+        <div class="calc-result-label">Parcela inicial estimada (Sistema Price)</div>
+        <div class="calc-result-value" id="calcParcela">—</div>
+        <div class="calc-result-sub" id="calcFinanciado"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="depoimentos" style="background:#fff;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Depoimentos</span>
+      <h2>O que dizem nossos clientes</h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"[Depoimento real do cliente aqui — ex: Atendimento excelente, João me ajudou em cada etapa do financiamento.]"</p>
+        <div class="testimonial-author">[Nome do cliente]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"[Depoimento real do cliente aqui — ex: Conseguiu vender meu apartamento em poucas semanas, super recomendo.]"</p>
+        <div class="testimonial-author">[Nome do cliente]</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"[Depoimento real do cliente aqui — ex: Contratei o seguro de previdência e a atenção foi impecável do início ao fim.]"</p>
+        <div class="testimonial-author">[Nome do cliente]</div>
+      </div>
+    </div>
+    <p style="margin-top:16px; color:var(--slate); font-size:0.82rem;">* Troque pelos depoimentos reais dos seus clientes assim que tiver — recomendamos pedir avaliações no Google e no Instagram para reforçar a prova social.</p>
   </div>
 </section>
 
@@ -453,6 +736,29 @@
       </div>
     </div>
     <p style="margin-top:20px; color:var(--slate); font-size:0.85rem;">* Substitua os campos entre colchetes pelos dados reais do empreendimento antes de publicar.</p>
+  </div>
+</section>
+
+<section class="section" id="faq" style="background:var(--paper);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Dúvidas frequentes</span>
+      <h2>Perguntas frequentes</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Quais serviços a Lima Buarque oferece?</summary>
+        <p>Seguros de vida profissional, consórcio de imóveis, previdência privada (VGBL/PGBL), responsabilidade civil profissional, seguro saúde e, mais recentemente, corretagem de imóveis com registro CRECI.</p>
+      </details>
+      <details class="faq-item">
+        <summary>A Lima Buarque atende em quais cidades?</summary>
+        <p>Atendemos com escritórios em Vitória, ES e Campos dos Goytacazes, RJ, além de atendimento remoto para outras regiões.</p>
+      </details>
+      <details class="faq-item">
+        <summary>É preciso pagar para simular um orçamento?</summary>
+        <p>Não. A simulação de orçamento é gratuita e sem compromisso.</p>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -554,18 +860,45 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box detail-box">
+    <button class="modal-close" id="detailCloseBtn">✕</button>
+
+    <div class="detail-gallery">
+      <div class="gallery-main" id="galleryMain"></div>
+      <button type="button" class="gallery-nav prev" id="galleryPrev">‹</button>
+      <button type="button" class="gallery-nav next" id="galleryNext">›</button>
+    </div>
+    <div class="gallery-thumbs" id="galleryThumbs"></div>
+
+    <div class="detail-header">
+      <div>
+        <h3 id="detailTitle">Imóvel</h3>
+        <div class="price" id="detailPreco"></div>
+      </div>
+      <span class="imovel-status" id="detailStatus"></span>
+    </div>
+
+    <div class="detail-ficha" id="detailFicha"></div>
+
+    <p class="detail-descricao" id="detailDescricao"></p>
+
+    <div class="detail-embed" id="detailMap"></div>
+    <div class="detail-embed" id="detailVideo"></div>
+    <div class="detail-embed" id="detailTour"></div>
+
+    <a class="btn btn-primary" id="detailWhats" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-top:10px;">Falar sobre este imóvel no WhatsApp</a>
+
+    <div id="detailSimilar" style="margin-top:32px;"></div>
+  </div>
+</div>
+
+<a href="https://wa.me/5500009993333" target="_blank" rel="noopener" class="whatsapp-float">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.06-1.36A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.08-1.12l-.29-.17-3 .8.8-2.93-.19-.3A8 8 0 1 1 12 20zm4.4-5.9c-.24-.12-1.43-.7-1.65-.79-.22-.08-.38-.12-.54.12-.16.24-.62.79-.76.95-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.42-1.33-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.4h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.43-.58 1.63-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28z"/></svg>
+  <span>Fale agora com um corretor</span>
+</a>
+
 <script>
-  document.querySelectorAll('.switch button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.switch button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.dataset.mode;
-      document.documentElement.style.setProperty('--accent', mode==='teal' ? 'var(--teal)' : 'var(--gold)');
-      document.documentElement.style.setProperty('--accent-soft', mode==='teal' ? 'var(--teal-soft)' : 'var(--gold-soft)');
-      const target = document.querySelector(btn.dataset.target);
-      if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
-    });
-  });
 
   function openOrcamento(){
     document.getElementById('orcamentoModal').classList.add('open');
@@ -617,7 +950,55 @@
       orcamentoSubmit.textContent = 'Pedir orçamento';
     }
   });
+
+  /* Count-up animation for social proof numbers */
+  const proofEls = document.querySelectorAll('.proof-num');
+  const proofObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = parseInt(el.dataset.count, 10) || 0;
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        let cur = 0;
+        const step = Math.max(1, Math.ceil(target / 40));
+        const timer = setInterval(()=>{
+          cur += step;
+          if(cur >= target){ cur = target; clearInterval(timer); }
+          el.textContent = prefix + cur + suffix;
+        }, 30);
+        proofObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  proofEls.forEach(el => proofObserver.observe(el));
+
+  /* Financing calculator (Sistema Price) */
+  document.getElementById('calcBtn').addEventListener('click', ()=>{
+    const valor = parseFloat(document.getElementById('calcValor').value) || 0;
+    const entradaPct = parseFloat(document.getElementById('calcEntrada').value) || 0;
+    const anos = parseFloat(document.getElementById('calcPrazo').value) || 0;
+    const taxaAno = parseFloat(document.getElementById('calcTaxa').value) || 0;
+
+    const entrada = valor * (entradaPct / 100);
+    const financiado = valor - entrada;
+    const n = anos * 12;
+    const i = (taxaAno / 100) / 12;
+    let parcela = 0;
+    if(i > 0 && n > 0){
+      parcela = financiado * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+    } else if(n > 0){
+      parcela = financiado / n;
+    }
+    document.getElementById('calcParcela').textContent = parcela > 0
+      ? parcela.toLocaleString('pt-BR', { style:'currency', currency:'BRL' })
+      : '—';
+    document.getElementById('calcFinanciado').textContent = financiado > 0
+      ? `Valor financiado: ${financiado.toLocaleString('pt-BR', { style:'currency', currency:'BRL' })} em ${n} parcelas`
+      : '';
+  });
 </script>
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -634,8 +1015,12 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const WHATSAPP_NUMBER = "5500009993333";
 
   const statusLabels = { disponivel: 'Disponível', reservado: 'Reservado', vendido: 'Vendido' };
+  const tagLabels = { semana: '🏆 Destaque da Semana', oportunidade: '🏅 Oportunidade', visitado: '🔥 Mais visitado' };
+
+  let allImoveis = [];
 
   function escapeHtml(str){
     const d = document.createElement('div');
@@ -643,48 +1028,199 @@
     return d.innerHTML;
   }
 
+  function waLink(titulo){
+    const text = encodeURIComponent(`Olá! Tenho interesse no imóvel: ${titulo || ''}`);
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  }
+
+  function buildCard(item){
+    const { id, data: d } = item;
+    const thumb = (d.fotos && d.fotos[0]) ? d.fotos[0].url : null;
+    const statusKey = d.status || 'disponivel';
+    const tagKey = d.destaque && d.destaque !== 'nenhum' ? d.destaque : null;
+    const card = document.createElement('div');
+    card.className = 'imovel-card';
+    card.innerHTML = `
+      <div class="imovel-thumb">
+        ${thumb ? `<img src="${thumb}" alt="${escapeHtml(d.titulo||'Imóvel')}" loading="lazy">` : `<div class="noimg">Foto em breve</div>`}
+        <span class="imovel-status ${statusKey}">${statusLabels[statusKey] || 'Disponível'}</span>
+        ${tagKey ? `<span class="imovel-tag ${tagKey}">${tagLabels[tagKey]}</span>` : ''}
+      </div>
+      <div class="imovel-body">
+        <h3>${escapeHtml(d.titulo || 'Imóvel disponível')}</h3>
+        ${d.preco ? `<div class="price">${escapeHtml(d.preco)}</div>` : ''}
+        <div class="meta">${d.area ? `<span>${escapeHtml(d.area)}</span>` : ''}${d.quartos ? `<span>${escapeHtml(d.quartos)} quartos</span>` : ''}${d.cidade ? `<span>${escapeHtml(d.cidade)}</span>` : ''}</div>
+        ${d.endereco ? `<div class="addr">${escapeHtml(d.endereco)}</div>` : ''}
+        <button type="button" class="btn btn-dark" data-open-id="${id}">Ver detalhes</button>
+      </div>
+    `;
+    card.querySelector('[data-open-id]').addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(id); });
+    card.addEventListener('click', ()=> openDetail(id));
+    return card;
+  }
+
+  function renderGrid(list){
+    const grid = document.getElementById('imoveisGrid');
+    if (!list.length){
+      grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--slate);">Nenhum imóvel encontrado com esses filtros.</div>';
+      return;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'imoveis-grid';
+    list.forEach(item => wrap.appendChild(buildCard(item)));
+    grid.innerHTML = '';
+    grid.appendChild(wrap);
+  }
+
+  function populateCityFilter(){
+    const sel = document.getElementById('filtroCidade');
+    const cities = [...new Set(allImoveis.map(i => i.data.cidade).filter(Boolean))].sort();
+    cities.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  }
+
+  function applyFilters(){
+    const cidade = document.getElementById('filtroCidade').value;
+    const finalidade = document.getElementById('filtroFinalidade').value;
+    const quartosMin = parseInt(document.getElementById('filtroQuartos').value, 10) || 0;
+    const valorMax = parseFloat((document.getElementById('filtroValor').value || '').replace(/\D/g,'')) || 0;
+
+    const filtered = allImoveis.filter(({ data: d }) => {
+      if (cidade && d.cidade !== cidade) return false;
+      if (finalidade && d.finalidade !== finalidade) return false;
+      if (quartosMin && (parseInt(d.quartos, 10) || 0) < quartosMin) return false;
+      if (valorMax){
+        const preco = parseFloat((d.preco || '').replace(/\D/g,'')) || 0;
+        if (preco && preco > valorMax) return false;
+      }
+      return true;
+    });
+    renderGrid(filtered);
+  }
+
+  document.getElementById('filtrarBtn').addEventListener('click', applyFilters);
+
   async function loadImoveis(){
     const grid = document.getElementById('imoveisGrid');
     try{
       const q = query(collection(db, 'imoveis'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      if (snap.empty){
+      allImoveis = [];
+      snap.forEach(docSnap => allImoveis.push({ id: docSnap.id, data: docSnap.data() }));
+      if (!allImoveis.length){
         grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--slate);">Nenhum imóvel disponível no momento. Fale com a gente para saber sobre novos lançamentos.</div>';
         return;
       }
-      const wrap = document.createElement('div');
-      wrap.className = 'imoveis-grid';
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const thumb = (d.fotos && d.fotos[0]) ? d.fotos[0].url : null;
-        const statusKey = d.status || 'disponivel';
-        const waText = encodeURIComponent(`Olá! Tenho interesse no imóvel: ${d.titulo || ''}`);
-        const card = document.createElement('div');
-        card.className = 'imovel-card';
-        card.innerHTML = `
-          <div class="imovel-thumb" style="${thumb ? `background-image:url('${thumb}')` : ''}">
-            <span class="imovel-status ${statusKey}">${statusLabels[statusKey] || 'Disponível'}</span>
-            ${thumb ? '' : 'Foto em breve'}
-          </div>
-          <div class="imovel-body">
-            <h3>${escapeHtml(d.titulo || 'Imóvel disponível')}</h3>
-            ${d.preco ? `<div class="price">${escapeHtml(d.preco)}</div>` : ''}
-            <div class="meta">${d.area ? `<span>${escapeHtml(d.area)}</span>` : ''}${d.quartos ? `<span>${escapeHtml(d.quartos)} quartos</span>` : ''}</div>
-            ${d.endereco ? `<div class="addr">${escapeHtml(d.endereco)}</div>` : ''}
-            <a class="btn btn-primary" href="https://wa.me/5500009993333?text=${waText}" target="_blank" rel="noopener">Falar sobre este imóvel</a>
-          </div>
-        `;
-        wrap.appendChild(card);
-      });
-      grid.innerHTML = '';
-      grid.appendChild(wrap);
+      populateCityFilter();
+      renderGrid(allImoveis);
     } catch(err){
       grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--slate);">Não foi possível carregar os imóveis agora.</div>';
     }
   }
 
+  // ---------- PROPERTY DETAIL MODAL ----------
+  let galleryPhotos = [];
+  let galleryIndex = 0;
+
+  function openDetail(id){
+    const item = allImoveis.find(i => i.id === id);
+    if (!item) return;
+    const d = item.data;
+    galleryPhotos = (d.fotos || []).map(f => f.url);
+    galleryIndex = 0;
+
+    document.getElementById('detailTitle').textContent = d.titulo || 'Imóvel';
+    document.getElementById('detailStatus').textContent = statusLabels[d.status] || 'Disponível';
+    document.getElementById('detailStatus').className = 'imovel-status ' + (d.status || 'disponivel');
+    document.getElementById('detailPreco').textContent = d.preco || '';
+    document.getElementById('detailDescricao').textContent = d.descricao || 'Sem descrição informada.';
+
+    const fichaEl = document.getElementById('detailFicha');
+    const fichaItems = [
+      ['Área', d.area], ['Quartos', d.quartos], ['Cidade', d.cidade],
+      ['Endereço', d.endereco], ['Finalidade', d.finalidade === 'aluguel' ? 'Aluguel' : d.finalidade === 'venda' ? 'Venda' : '']
+    ].filter(([,v]) => v);
+    fichaEl.innerHTML = fichaItems.map(([k,v]) => `<div class="ficha-row"><span>${k}</span><strong>${escapeHtml(v)}</strong></div>`).join('');
+
+    const mapEl = document.getElementById('detailMap');
+    if (d.endereco){
+      mapEl.innerHTML = `<iframe loading="lazy" style="border:0; width:100%; height:100%;" src="https://maps.google.com/maps?q=${encodeURIComponent(d.endereco)}&output=embed"></iframe>`;
+      mapEl.style.display = 'block';
+    } else { mapEl.style.display = 'none'; mapEl.innerHTML = ''; }
+
+    const videoEl = document.getElementById('detailVideo');
+    if (d.videoUrl){
+      const embed = d.videoUrl.includes('watch?v=') ? d.videoUrl.replace('watch?v=','embed/') : d.videoUrl;
+      videoEl.innerHTML = `<iframe loading="lazy" style="border:0; width:100%; height:100%;" src="${embed}" allowfullscreen></iframe>`;
+      videoEl.style.display = 'block';
+    } else { videoEl.style.display = 'none'; videoEl.innerHTML = ''; }
+
+    const tourEl = document.getElementById('detailTour');
+    if (d.tourUrl){
+      tourEl.innerHTML = `<iframe loading="lazy" style="border:0; width:100%; height:100%;" src="${d.tourUrl}" allowfullscreen></iframe>`;
+      tourEl.style.display = 'block';
+    } else { tourEl.style.display = 'none'; tourEl.innerHTML = ''; }
+
+    document.getElementById('detailWhats').href = waLink(d.titulo);
+
+    renderGallery();
+    renderSimilar(item);
+
+    document.getElementById('detailModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderGallery(){
+    const mainEl = document.getElementById('galleryMain');
+    const thumbsEl = document.getElementById('galleryThumbs');
+    if (!galleryPhotos.length){
+      mainEl.innerHTML = '<div class="noimg" style="position:static; height:100%; display:flex; align-items:center; justify-content:center;">Sem fotos cadastradas</div>';
+      thumbsEl.innerHTML = '';
+      return;
+    }
+    mainEl.innerHTML = `<img src="${galleryPhotos[galleryIndex]}" alt="Foto do imóvel" loading="lazy">`;
+    thumbsEl.innerHTML = galleryPhotos.map((url, idx) =>
+      `<img src="${url}" data-idx="${idx}" class="${idx===galleryIndex?'active':''}" loading="lazy">`
+    ).join('');
+    thumbsEl.querySelectorAll('img').forEach(t => t.addEventListener('click', () => {
+      galleryIndex = parseInt(t.dataset.idx, 10); renderGallery();
+    }));
+  }
+
+  document.getElementById('galleryPrev').addEventListener('click', ()=>{
+    if (!galleryPhotos.length) return;
+    galleryIndex = (galleryIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+    renderGallery();
+  });
+  document.getElementById('galleryNext').addEventListener('click', ()=>{
+    if (!galleryPhotos.length) return;
+    galleryIndex = (galleryIndex + 1) % galleryPhotos.length;
+    renderGallery();
+  });
+
+  function renderSimilar(current){
+    const el = document.getElementById('detailSimilar');
+    const similar = allImoveis.filter(i => i.id !== current.id &&
+      (i.data.cidade === current.data.cidade || i.data.finalidade === current.data.finalidade)).slice(0, 3);
+    if (!similar.length){ el.innerHTML = ''; return; }
+    el.innerHTML = '<h4>Imóveis semelhantes</h4><div class="imoveis-grid" id="similarGrid"></div>';
+    const grid = document.getElementById('similarGrid');
+    similar.forEach(item => grid.appendChild(buildCard(item)));
+  }
+
+  document.getElementById('detailCloseBtn').addEventListener('click', closeDetail);
+  document.getElementById('detailModal').addEventListener('click', (e)=>{ if (e.target.id === 'detailModal') closeDetail(); });
+  function closeDetail(){
+    document.getElementById('detailModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   loadImoveis();
 </script>
+
 
 </body>
 </html>
