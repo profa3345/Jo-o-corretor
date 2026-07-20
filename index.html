@@ -118,10 +118,10 @@
 
   nav{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
   nav .wrap{display:flex; align-items:center; justify-content:space-between; height:76px;}
-  .brand{display:flex; align-items:center; gap:16px;}
-  .brand-logo{height:36px; width:auto; display:block;}
-  .brand-text{display:flex; flex-direction:column; line-height:1.2; padding-left:16px; border-left:1px solid var(--line);}
-  .brand-text .tag{font-family:'IBM Plex Mono'; font-size:0.6rem; letter-spacing:0.08em; color:var(--slate); text-transform:uppercase;}
+  .brand{display:flex; flex-direction:column; align-items:flex-start; gap:3px;}
+  .brand-logo{height:34px; width:auto; display:block;}
+  .brand-text{display:flex; flex-direction:column; line-height:1.2;}
+  .brand-text .tag{font-family:'IBM Plex Mono'; font-size:0.58rem; letter-spacing:0.07em; color:var(--slate); text-transform:uppercase;}
   .navlinks{display:flex; align-items:center; gap:38px; font-size:0.78rem; color:var(--slate); font-weight:600; letter-spacing:0.03em; text-transform:uppercase;}
   .navlinks a{transition:color .2s; position:relative; padding:6px 0;}
   .navlinks a::after{
@@ -312,8 +312,38 @@
   .office p{font-size:0.9rem; color:var(--slate); line-height:1.55;}
   .office .cnpj{margin-top:10px; font-family:'IBM Plex Mono'; font-size:0.78rem; color:var(--navy-deep);}
 
+  .map-block{margin-top:32px; border:1px solid var(--line); border-radius:20px; overflow:hidden;}
+  .map-tabs{display:flex; background:var(--paper); border-bottom:1px solid var(--line);}
+  .map-tab{flex:1; padding:14px; border:none; background:transparent; font-size:0.86rem; font-weight:600; color:var(--slate); cursor:pointer; transition:all .2s;}
+  .map-tab.active{background:#fff; color:var(--navy-deep); box-shadow:inset 0 -2px 0 var(--gold);}
+  .map-embed{aspect-ratio:16/6; min-height:280px;}
+  @media(max-width:700px){ .map-embed{aspect-ratio:4/3;} }
+
   footer{border-top:1px solid var(--line); padding:44px 0; margin-top:20px; background:#fff;}
   footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:18px; font-size:0.84rem; color:var(--slate);}
+  .footer-links{display:flex; gap:20px;}
+  .footer-links a{transition:color .2s;}
+  .footer-links a:hover{color:var(--navy-deep);}
+
+  .blog-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .blog-card{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:24px; display:block; transition:transform .2s, box-shadow .2s;}
+  .blog-card:hover{transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(15,24,48,0.18);}
+  .blog-tag{font-family:'IBM Plex Mono'; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--gold); display:inline-block; margin-bottom:12px;}
+  .blog-card h3{font-size:1rem; margin-bottom:10px; line-height:1.35;}
+  .blog-card p{color:var(--slate); font-size:0.85rem; margin-bottom:16px;}
+  .blog-read{font-size:0.82rem; font-weight:600; color:var(--navy-deep);}
+  @media(max-width:960px){ .blog-grid{grid-template-columns:1fr 1fr;} }
+  @media(max-width:600px){ .blog-grid{grid-template-columns:1fr;} }
+
+  .cookie-banner{
+    position:fixed; left:20px; right:20px; bottom:-140px; z-index:180; background:var(--navy-deep); color:#fff;
+    border-radius:16px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:20px;
+    flex-wrap:wrap; max-width:900px; margin:0 auto; box-shadow:0 20px 50px -20px rgba(0,0,0,0.4); transition:bottom .4s ease;
+  }
+  .cookie-banner.show{bottom:20px;}
+  .cookie-banner p{font-size:0.86rem; color:rgba(255,255,255,0.8); flex:1; min-width:220px;}
+  .cookie-banner a{color:#fff; text-decoration:underline;}
+  .cookie-banner .btn{white-space:nowrap;}
   footer .fbrand{font-family:'Space Grotesk'; color:var(--navy-deep); font-weight:600;}
 
   ::selection{background:var(--gold); color:#fff;}
@@ -473,7 +503,7 @@
     <div class="proof-stars">★★★★★ <span>Avaliação dos nossos clientes</span></div>
     <div class="proof-grid">
       <div class="proof-item"><div class="proof-num" data-count="500" data-suffix="+">0</div><div class="proof-label">Clientes atendidos</div></div>
-      <div class="proof-item"><div class="proof-num" data-prefix="R$ " data-count="00" data-suffix=" mi">0</div><div class="proof-label">Em imóveis negociados*</div></div>
+      <div class="proof-item"><div class="proof-num-text">R$ [valor] mi</div><div class="proof-label">Em imóveis negociados*</div></div>
       <div class="proof-item"><div class="proof-num" data-count="10" data-suffix=" anos">0</div><div class="proof-label">De experiência</div></div>
       <div class="proof-item"><div class="proof-num-text">SUSEP · CRECI</div><div class="proof-label">Registro ativo e verificável</div></div>
     </div>
@@ -739,6 +769,45 @@
   </div>
 </section>
 
+<section class="section" id="blog" style="background:#fff;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Blog</span>
+      <h2>Conteúdo para te ajudar a decidir</h2>
+      <p>Dicas práticas sobre seguros, previdência e imóveis, direto de quem lida com isso todos os dias.</p>
+    </div>
+    <div class="blog-grid">
+      <a href="blog-financiar-imovel.html" class="blog-card">
+        <span class="blog-tag">Imóveis</span>
+        <h3>Como financiar um imóvel: o passo a passo</h3>
+        <p>Entenda as etapas, a documentação e o que os bancos avaliam antes de aprovar seu financiamento.</p>
+        <span class="blog-read">Ler artigo →</span>
+      </a>
+      <a href="blog-comprar-ou-alugar.html" class="blog-card">
+        <span class="blog-tag">Imóveis</span>
+        <h3>Comprar ou alugar: como decidir</h3>
+        <p>Os prós, contras e contas que fazem diferença na hora de escolher entre comprar e alugar.</p>
+        <span class="blog-read">Ler artigo →</span>
+      </a>
+      <a href="blog-documentacao-necessaria.html" class="blog-card">
+        <span class="blog-tag">Imóveis</span>
+        <h3>Documentação necessária para comprar um imóvel</h3>
+        <p>A lista completa de documentos, seus e do imóvel, para uma compra segura e sem surpresas.</p>
+        <span class="blog-read">Ler artigo →</span>
+      </a>
+      <a href="blog-dicas-vender-imovel.html" class="blog-card">
+        <span class="blog-tag">Imóveis</span>
+        <h3>Dicas para vender seu imóvel mais rápido</h3>
+        <p>O que realmente pesa na decisão do comprador — e como preparar seu imóvel para vender melhor.</p>
+        <span class="blog-read">Ler artigo →</span>
+      </a>
+    </div>
+    <div style="margin-top:28px;">
+      <a href="blog.html" class="btn btn-dark">Ver todos os artigos</a>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="faq" style="background:var(--paper);">
   <div class="wrap">
     <div class="section-head">
@@ -791,6 +860,17 @@
         </div>
       </div>
     </div>
+
+    <div class="map-block">
+      <div class="map-tabs">
+        <button type="button" class="map-tab active" data-map="vitoria">Vitória · ES</button>
+        <button type="button" class="map-tab" data-map="campos">Campos dos Goytacazes · RJ</button>
+      </div>
+      <div class="map-embed">
+        <iframe id="mapFrame" loading="lazy" style="border:0; width:100%; height:100%;"
+          src="https://maps.google.com/maps?q=Av.+Nossa+Senhora+da+Penha,+2796,+Santa+Lu%C3%ADza,+Vit%C3%B3ria+-+ES&output=embed"></iframe>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -798,9 +878,19 @@
   <div class="wrap">
     <div class="fbrand">Lima Buarque</div>
     <div>Seguros · Previdência · SUSEP &nbsp;|&nbsp; Imóveis · CRECI</div>
+    <div class="footer-links">
+      <a href="blog.html">Blog</a>
+      <a href="privacidade.html">Política de Privacidade</a>
+      <a href="termos.html">Termos de Uso</a>
+    </div>
     <div>© 2026 — limabuarque.com.br</div>
   </div>
 </footer>
+
+<div class="cookie-banner" id="cookieBanner">
+  <p>Usamos cookies para melhorar sua experiência no site, de acordo com a nossa <a href="privacidade.html">Política de Privacidade</a>.</p>
+  <button type="button" id="cookieAccept" class="btn btn-primary">Aceitar</button>
+</div>
 
 <div class="modal-overlay" id="orcamentoModal">
   <div class="modal-box">
@@ -996,6 +1086,37 @@
     document.getElementById('calcFinanciado').textContent = financiado > 0
       ? `Valor financiado: ${financiado.toLocaleString('pt-BR', { style:'currency', currency:'BRL' })} em ${n} parcelas`
       : '';
+  });
+
+  /* Map tabs */
+  const mapUrls = {
+    vitoria: "https://maps.google.com/maps?q=Av.+Nossa+Senhora+da+Penha,+2796,+Santa+Lu%C3%ADza,+Vit%C3%B3ria+-+ES&output=embed",
+    campos: "https://maps.google.com/maps?q=Rua+Bar%C3%A3o+do+Amazonas,+111,+Centro,+Campos+dos+Goytacazes+-+RJ&output=embed"
+  };
+  document.querySelectorAll('.map-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.map-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('mapFrame').src = mapUrls[tab.dataset.map];
+    });
+  });
+
+  /* Cookie consent (LGPD) */
+  function getCookie(name){
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+  }
+  function setCookie(name, value, days){
+    const d = new Date();
+    d.setTime(d.getTime() + days*24*60*60*1000);
+    document.cookie = `${name}=${value}; expires=${d.toUTCString()}; path=/`;
+  }
+  if (!getCookie('lb_cookie_consent')){
+    document.getElementById('cookieBanner').classList.add('show');
+  }
+  document.getElementById('cookieAccept').addEventListener('click', ()=>{
+    setCookie('lb_cookie_consent', 'aceito', 365);
+    document.getElementById('cookieBanner').classList.remove('show');
   });
 </script>
 
