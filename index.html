@@ -30,22 +30,37 @@
   a{color:inherit; text-decoration:none;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
 
+  .topbar{background:var(--navy-deep); color:rgba(255,255,255,0.7);}
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between; height:38px; font-size:0.74rem;}
+  .topbar-trust{display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono'; letter-spacing:0.06em; text-transform:uppercase; font-size:0.68rem;}
+  .topbar-trust .sep{color:rgba(255,255,255,0.25);}
+  .topbar-right{display:flex; align-items:center; gap:18px;}
+  .topbar-phone{display:flex; align-items:center; gap:7px; font-family:'IBM Plex Mono'; font-size:0.72rem; color:rgba(255,255,255,0.85); transition:color .2s;}
+  .topbar-phone:hover{color:#fff;}
+  .topbar-socials{display:flex; align-items:center; gap:14px;}
+  .topbar-socials a{color:rgba(255,255,255,0.55); display:flex; transition:color .2s;}
+  .topbar-socials a:hover{color:#fff;}
+  @media(max-width:760px){ .topbar-trust{display:none;} }
+
   nav{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
-  .brand{display:flex; align-items:center; gap:14px;}
-  .brand-logo{height:38px; width:auto; display:block;}
-  .brand-text{display:flex; flex-direction:column; line-height:1.15; padding-left:14px; border-left:1px solid var(--line);}
-  .brand-text .tag{font-family:'IBM Plex Mono'; font-size:0.62rem; letter-spacing:0.05em; color:var(--slate); text-transform:uppercase;}
-  .navlinks{display:flex; gap:30px; font-size:0.86rem; color:var(--slate); font-weight:500;}
-  .navlinks a{transition:color .2s; position:relative; padding:4px 0;}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:76px;}
+  .brand{display:flex; align-items:center; gap:16px;}
+  .brand-logo{height:36px; width:auto; display:block;}
+  .brand-text{display:flex; flex-direction:column; line-height:1.2; padding-left:16px; border-left:1px solid var(--line);}
+  .brand-text .tag{font-family:'IBM Plex Mono'; font-size:0.6rem; letter-spacing:0.08em; color:var(--slate); text-transform:uppercase;}
+  .navlinks{display:flex; align-items:center; gap:38px; font-size:0.78rem; color:var(--slate); font-weight:600; letter-spacing:0.03em; text-transform:uppercase;}
+  .navlinks a{transition:color .2s; position:relative; padding:6px 0;}
+  .navlinks a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:2px; background:var(--gold);
+    transition:width .25s ease;
+  }
   .navlinks a:hover{color:var(--navy-deep);}
-  .nav-right{display:flex; align-items:center; gap:20px;}
-  .socials{display:flex; gap:8px;}
-  .socials a{width:32px; height:32px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--slate); transition:all .2s;}
-  .socials a:hover{background:var(--navy-deep); color:#fff; border-color:var(--navy-deep);}
-  .nav-cta{background:var(--navy-deep); color:#fff; padding:10px 20px; border-radius:100px; font-size:0.84rem; font-weight:600; transition:transform .2s;}
-  .nav-cta:hover{transform:translateY(-2px);}
-  @media(max-width:900px){ .navlinks{display:none;} }
+  .navlinks a:hover::after{width:100%;}
+  .nav-right{display:flex; align-items:center; gap:24px;}
+  .nav-divider{width:1px; height:22px; background:var(--line);}
+  .nav-cta{background:var(--navy-deep); color:#fff; padding:11px 24px; border-radius:100px; font-size:0.82rem; font-weight:600; transition:all .2s; display:inline-flex; align-items:center; gap:8px;}
+  .nav-cta:hover{transform:translateY(-2px); box-shadow:0 12px 24px -10px rgba(15,24,48,0.45);}
+  @media(max-width:960px){ .navlinks{display:none;} }
 
   header.hero{position:relative; padding:64px 0 70px; overflow:hidden;}
   header.hero::before{
@@ -99,6 +114,21 @@
   .diff-list li{display:flex; gap:12px; padding:14px 0; border-top:1px solid var(--line); font-size:0.94rem; color:var(--slate);}
   .diff-list li::before{content:"—"; color:var(--gold); flex-shrink:0;}
   .diff-list li:last-child{border-bottom:1px solid var(--line);}
+
+  .imoveis-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:24px;}
+  .imovel-card{background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; transition:transform .2s, box-shadow .2s;}
+  .imovel-card:hover{transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(15,24,48,0.18);}
+  .imovel-thumb{aspect-ratio:4/3; background:var(--paper) center/cover no-repeat; position:relative; display:flex; align-items:center; justify-content:center; color:var(--slate); font-size:0.82rem;}
+  .imovel-status{position:absolute; top:12px; left:12px; font-family:'IBM Plex Mono'; font-size:0.68rem; padding:5px 11px; border-radius:100px; text-transform:uppercase; letter-spacing:0.04em;}
+  .imovel-status.disponivel{background:var(--teal-soft); color:var(--teal);}
+  .imovel-status.reservado{background:var(--gold-soft); color:var(--gold);}
+  .imovel-status.vendido{background:rgba(194,74,74,0.1); color:#C24A4A;}
+  .imovel-body{padding:20px;}
+  .imovel-body h3{font-size:1.05rem; margin-bottom:8px;}
+  .imovel-body .price{font-family:'IBM Plex Mono'; color:var(--gold); font-weight:600; font-size:0.95rem; margin-bottom:6px;}
+  .imovel-body .meta{display:flex; gap:12px; color:var(--slate); font-size:0.82rem; margin-bottom:10px;}
+  .imovel-body .addr{color:var(--slate); font-size:0.86rem; margin-bottom:14px;}
+  .imovel-body a.btn{width:100%; padding:11px; font-size:0.85rem;}
 
   .card-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
   .service-card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:32px; transition:transform .2s, box-shadow .2s;}
@@ -197,6 +227,28 @@
 </head>
 <body>
 
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-trust">
+      <span>SUSEP</span><span class="sep">·</span><span>CRECI</span><span class="sep">·</span><span>Desde 2016</span>
+    </div>
+    <div class="topbar-right">
+      <a class="topbar-phone" href="tel:08009993333">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        0800 999 3333
+      </a>
+      <div class="topbar-socials">
+        <a href="https://www.facebook.com/limabuarquecorretora" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.25-1.5 1.5-1.5H16.5V4.3c-.27-.04-1.2-.12-2.28-.12-2.25 0-3.8 1.37-3.8 3.9V10.5H8v3h2.42V21h3.08z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/limabuarquecorretor/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <nav>
   <div class="wrap">
     <div class="brand">
@@ -213,14 +265,7 @@
       <a href="#contato">Contato</a>
     </div>
     <div class="nav-right">
-      <div class="socials">
-        <a href="https://www.facebook.com/limabuarquecorretora" target="_blank" rel="noopener" aria-label="Facebook">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.25-1.5 1.5-1.5H16.5V4.3c-.27-.04-1.2-.12-2.28-.12-2.25 0-3.8 1.37-3.8 3.9V10.5H8v3h2.42V21h3.08z"/></svg>
-        </a>
-        <a href="https://www.instagram.com/limabuarquecorretor/" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
-        </a>
-      </div>
+      <span class="nav-divider"></span>
       <button class="nav-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
     </div>
   </div>
@@ -360,6 +405,19 @@
           <li>Acompanhamento até a entrega das chaves</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="listagem-imoveis" style="background:#fff;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Portfólio</span>
+      <h2>Imóveis disponíveis</h2>
+      <p>Anúncios atualizados diretamente por João. Fale com a gente para mais detalhes ou para agendar uma visita.</p>
+    </div>
+    <div id="imoveisGrid">
+      <div style="text-align:center; padding:40px; color:var(--slate);">Carregando imóveis...</div>
     </div>
   </div>
 </section>
@@ -559,6 +617,73 @@
       orcamentoSubmit.textContent = 'Pedir orçamento';
     }
   });
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA65wWmwcKljfVRXL873UcZeL0rKfNYHuQ",
+    authDomain: "tio-joao-47e9b.firebaseapp.com",
+    projectId: "tio-joao-47e9b",
+    storageBucket: "tio-joao-47e9b.firebasestorage.app",
+    messagingSenderId: "130858386160",
+    appId: "1:130858386160:web:924a4ae84f5442b887b835",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const statusLabels = { disponivel: 'Disponível', reservado: 'Reservado', vendido: 'Vendido' };
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  async function loadImoveis(){
+    const grid = document.getElementById('imoveisGrid');
+    try{
+      const q = query(collection(db, 'imoveis'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty){
+        grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--slate);">Nenhum imóvel disponível no momento. Fale com a gente para saber sobre novos lançamentos.</div>';
+        return;
+      }
+      const wrap = document.createElement('div');
+      wrap.className = 'imoveis-grid';
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const thumb = (d.fotos && d.fotos[0]) ? d.fotos[0].url : null;
+        const statusKey = d.status || 'disponivel';
+        const waText = encodeURIComponent(`Olá! Tenho interesse no imóvel: ${d.titulo || ''}`);
+        const card = document.createElement('div');
+        card.className = 'imovel-card';
+        card.innerHTML = `
+          <div class="imovel-thumb" style="${thumb ? `background-image:url('${thumb}')` : ''}">
+            <span class="imovel-status ${statusKey}">${statusLabels[statusKey] || 'Disponível'}</span>
+            ${thumb ? '' : 'Foto em breve'}
+          </div>
+          <div class="imovel-body">
+            <h3>${escapeHtml(d.titulo || 'Imóvel disponível')}</h3>
+            ${d.preco ? `<div class="price">${escapeHtml(d.preco)}</div>` : ''}
+            <div class="meta">${d.area ? `<span>${escapeHtml(d.area)}</span>` : ''}${d.quartos ? `<span>${escapeHtml(d.quartos)} quartos</span>` : ''}</div>
+            ${d.endereco ? `<div class="addr">${escapeHtml(d.endereco)}</div>` : ''}
+            <a class="btn btn-primary" href="https://wa.me/5500009993333?text=${waText}" target="_blank" rel="noopener">Falar sobre este imóvel</a>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+      grid.innerHTML = '';
+      grid.appendChild(wrap);
+    } catch(err){
+      grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--slate);">Não foi possível carregar os imóveis agora.</div>';
+    }
+  }
+
+  loadImoveis();
 </script>
 
 </body>
