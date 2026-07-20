@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lima Buarque | Seguros, Previdência & Imóveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --navy-deep:#0F1830;
+    --slate:#5B6B85;
+    --paper:#F6F7FA;
+    --card:#FFFFFF;
+    --line:#E4E7EE;
+    --gold:#B8934E;
+    --gold-soft:rgba(184,147,78,0.12);
+    --teal:#1E8A79;
+    --teal-soft:rgba(30,138,121,0.10);
+    --accent: var(--gold);
+    --accent-soft: var(--gold-soft);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--navy); font-family:'Inter',sans-serif; line-height:1.6;}
+  h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; color:var(--navy-deep);}
+  .mono{font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  nav{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:78px;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-logo{height:44px; width:auto; display:block;}
+  .brand-text{display:flex; flex-direction:column; line-height:1.15; padding-left:2px; border-left:1px solid var(--line); padding-left:12px;}
+  .brand-text .tag{font-family:'IBM Plex Mono'; font-size:0.62rem; letter-spacing:0.06em; color:var(--slate); text-transform:uppercase;}
+  .navlinks{display:flex; gap:34px; font-size:0.9rem; color:var(--slate); font-weight:500;}
+  .navlinks a{transition:color .2s; position:relative;}
+  .navlinks a:hover{color:var(--navy-deep);}
+  .nav-right{display:flex; align-items:center; gap:22px;}
+  .socials{display:flex; gap:12px;}
+  .socials a{width:34px; height:34px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--slate); transition:all .2s; font-size:0.75rem;}
+  .socials a:hover{border-color:var(--navy-deep); color:var(--navy-deep);}
+  .nav-cta{background:var(--navy-deep); color:#fff; padding:11px 22px; border-radius:100px; font-size:0.86rem; font-weight:600; transition:transform .2s;}
+  .nav-cta:hover{transform:translateY(-2px);}
+  @media(max-width:900px){ .navlinks{display:none;} }
+
+  header.hero{position:relative; padding:110px 0 90px; overflow:hidden;}
+  header.hero::before{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(650px 420px at 12% 15%, var(--gold-soft), transparent 60%),
+                radial-gradient(650px 420px at 88% 25%, var(--teal-soft), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-video{
+    border-radius:20px; overflow:hidden; margin-bottom:40px; border:1px solid var(--line);
+    box-shadow:0 30px 60px -30px rgba(15,24,48,0.25); position:relative; max-height:460px;
+  }
+  .hero-video video{width:100%; height:100%; max-height:460px; object-fit:cover; display:block;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px; font-family:'IBM Plex Mono'; font-size:0.76rem;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--slate); border:1px solid var(--line);
+    background:#fff; padding:7px 14px; border-radius:100px; margin-bottom:28px;
+  }
+  header.hero h1{font-size:clamp(2.2rem, 5vw, 4rem); max-width:800px; line-height:1.1;}
+  header.hero .lede{max-width:600px; margin-top:24px; font-size:1.08rem; color:var(--slate);}
+  .hero-actions{display:flex; gap:14px; margin-top:38px; flex-wrap:wrap;}
+  .btn{padding:14px 26px; border-radius:100px; font-weight:600; font-size:0.94rem; display:inline-flex; align-items:center; gap:8px; transition:all .2s; cursor:pointer; border:none;}
+  .btn-primary{background:var(--navy-deep); color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px -10px rgba(15,24,48,0.4);}
+  .btn-ghost{border:1px solid var(--line); color:var(--navy-deep); background:#fff;}
+  .btn-ghost:hover{border-color:var(--navy-deep);}
+
+  .switch{margin-top:52px; display:inline-flex; padding:5px; border-radius:100px; background:#fff; border:1px solid var(--line); gap:4px;}
+  .switch button{font-family:'IBM Plex Mono'; font-size:0.8rem; padding:10px 20px; border-radius:100px; background:transparent; border:none; color:var(--slate); cursor:pointer; transition:all .25s;}
+  .switch button.active{background:var(--accent); color:#fff; font-weight:600;}
+
+  .trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:24px 0; background:#fff;}
+  .trust .wrap{display:flex; flex-wrap:wrap; gap:32px; justify-content:space-between; align-items:center;}
+  .trust-item{display:flex; align-items:center; gap:10px; font-size:0.86rem; color:var(--slate);}
+  .trust-item .num{font-family:'IBM Plex Mono'; color:var(--navy-deep); font-weight:500;}
+
+  .section{padding:100px 0;}
+  .section-head{max-width:680px; margin-bottom:56px;}
+  .section-tag{font-family:'IBM Plex Mono'; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:14px; display:block;}
+  .section-head h2{font-size:clamp(1.7rem,3vw,2.4rem);}
+  .section-head p{color:var(--slate); margin-top:16px; font-size:1rem;}
+
+  .about{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
+  .about-block h3{font-size:1.1rem; margin-bottom:10px; display:flex; align-items:center; gap:10px;}
+  .about-block h3::before{content:""; width:22px; height:2px; background:var(--gold);}
+  .about-block p{color:var(--slate); margin-bottom:30px; font-size:0.98rem;}
+  .diff-list{list-style:none;}
+  .diff-list li{display:flex; gap:12px; padding:14px 0; border-top:1px solid var(--line); font-size:0.94rem; color:var(--slate);}
+  .diff-list li::before{content:"—"; color:var(--gold); flex-shrink:0;}
+  .diff-list li:last-child{border-bottom:1px solid var(--line);}
+
+  .card-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .service-card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:32px; transition:transform .2s, box-shadow .2s;}
+  .service-card:hover{transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(15,24,48,0.18);}
+  .service-card .icn{width:46px; height:46px; border-radius:12px; background:var(--gold-soft); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:18px;}
+  .service-card h3{font-size:1.08rem; margin-bottom:10px;}
+  .service-card p{color:var(--slate); font-size:0.9rem;}
+  @media(max-width:900px){ .card-grid{grid-template-columns:1fr 1fr;} }
+  @media(max-width:600px){ .card-grid{grid-template-columns:1fr;} }
+
+  .spine-grid{display:grid; grid-template-columns:1fr 2px 1fr; position:relative;}
+  .spine-line{background:linear-gradient(var(--gold), var(--teal));}
+  .spine-badge{position:absolute; left:50%; transform:translateX(-50%); background:#fff; border:1px solid var(--line); border-radius:100px; padding:8px 16px; font-family:'IBM Plex Mono'; font-size:0.7rem; color:var(--slate); white-space:nowrap;}
+  .spine-badge.top{top:-10px;} .spine-badge.bottom{bottom:-10px;}
+  .service-col{padding:0 44px;}
+  .service-col.left{padding-left:0;} .service-col.right{padding-right:0;}
+  .service-icon{width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:22px; font-size:1.3rem;}
+  .service-col.left .service-icon{background:var(--gold-soft); color:var(--gold);}
+  .service-col.right .service-icon{background:var(--teal-soft); color:var(--teal);}
+  .service-col h3{font-size:1.4rem; margin-bottom:12px;}
+  .service-col > p{color:var(--slate); margin-bottom:24px;}
+  .service-col ul{list-style:none;}
+  .service-col li{display:flex; gap:12px; padding:13px 0; border-top:1px solid var(--line); font-size:0.92rem; color:var(--slate);}
+  .service-col.left li::before{content:"→"; color:var(--gold);}
+  .service-col.right li::before{content:"→"; color:var(--teal);}
+  @media(max-width:840px){ .spine-grid{grid-template-columns:1fr;} .spine-line{display:none;} .service-col{padding:0; margin-bottom:56px;} }
+
+  .feature-card{background:var(--navy-deep); color:#fff; border-radius:24px; padding:56px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center; position:relative; overflow:hidden;}
+  .feature-card::after{content:""; position:absolute; top:-40%; right:-15%; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle, rgba(30,138,121,0.25), transparent 70%);}
+  .feature-card .tag-row{display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{font-family:'IBM Plex Mono'; font-size:0.7rem; padding:6px 13px; border-radius:100px; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.75);}
+  .feature-card h3{color:#fff; font-size:1.9rem; margin-bottom:16px; position:relative;}
+  .feature-card p{color:rgba(255,255,255,0.65); margin-bottom:28px; position:relative; max-width:460px;}
+  .feature-stats{display:grid; grid-template-columns:1fr 1fr; gap:22px; position:relative;}
+  .stat{border-top:1px solid rgba(255,255,255,0.15); padding-top:14px;}
+  .stat .val{font-family:'Space Grotesk'; font-size:1.4rem; font-weight:600; color:#fff;}
+  .stat .lbl{font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:4px;}
+  .feature-visual{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:18px; height:100%; min-height:260px; display:flex; align-items:center; justify-content:center;}
+  .feature-visual svg{width:65%; height:auto;}
+  @media(max-width:900px){ .feature-card{grid-template-columns:1fr; padding:36px;} }
+
+  .contact-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;}
+  .contact-card{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:44px;}
+  .contact-card h3{font-size:1.3rem; margin-bottom:8px;}
+  .contact-card p{color:var(--slate); margin-bottom:26px; font-size:0.95rem;}
+  .contact-actions{display:flex; gap:12px; flex-wrap:wrap;}
+  .office{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:28px; margin-bottom:16px;}
+  .office .city{font-family:'IBM Plex Mono'; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:10px; display:block;}
+  .office p{font-size:0.9rem; color:var(--slate); line-height:1.55;}
+  .office .cnpj{margin-top:10px; font-family:'IBM Plex Mono'; font-size:0.78rem; color:var(--navy-deep);}
+
+  footer{border-top:1px solid var(--line); padding:44px 0; margin-top:20px; background:#fff;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:18px; font-size:0.84rem; color:var(--slate);}
+  footer .fbrand{font-family:'Space Grotesk'; color:var(--navy-deep); font-weight:600;}
+
+  ::selection{background:var(--gold); color:#fff;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{transition:none !important;} }
+
+  /* ORÇAMENTO MODAL */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(15,24,48,0.6); backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:200; padding:24px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    background:#fff; border-radius:22px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto;
+    padding:40px; position:relative; box-shadow:0 40px 80px -20px rgba(15,24,48,0.35);
+  }
+  .modal-close{
+    position:absolute; top:20px; right:20px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
+    background:#fff; color:var(--slate); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .modal-close:hover{background:var(--navy-deep); color:#fff; border-color:var(--navy-deep);}
+  .modal-box h3{font-size:1.5rem; margin-bottom:6px;}
+  .modal-box .sub{color:var(--slate); font-size:0.92rem; margin-bottom:28px;}
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .form-grid .full{grid-column:1 / -1;}
+  .form-field label{display:block; font-size:0.78rem; color:var(--slate); margin-bottom:6px; font-weight:500;}
+  .form-field input, .form-field select, .form-field textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-family:'Inter'; font-size:0.92rem;
+    background:var(--paper); color:var(--navy-deep); transition:border-color .2s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus{outline:none; border-color:var(--gold);}
+  .form-field textarea{resize:vertical; min-height:80px;}
+  .form-submit{
+    width:100%; margin-top:22px; padding:15px; border-radius:10px; border:none; background:var(--navy-deep); color:#fff;
+    font-weight:600; font-size:0.95rem; cursor:pointer; transition:transform .2s, opacity .2s;
+  }
+  .form-submit:hover{transform:translateY(-2px);}
+  .form-submit:disabled{opacity:0.6; cursor:not-allowed; transform:none;}
+  .form-status{margin-top:14px; font-size:0.88rem; text-align:center; display:none;}
+  .form-status.ok{color:var(--teal); display:block;}
+  .form-status.err{color:#C24A4A; display:block;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">
+      <img class="brand-logo" src="data:image/png;base64,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" alt="Lima Buarque">
+      <div class="brand-text">
+        <span class="tag">Seguros · Previdência · Imóveis</span>
+      </div>
+    </div>
+    <div class="navlinks">
+      <a href="#quemsomos">Quem Somos</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#imoveis">Imóveis</a>
+      <a href="#argos">Empreendimento</a>
+      <a href="#contato">Contato</a>
+    </div>
+    <div class="nav-right">
+      <div class="socials">
+        <a href="#" aria-label="Facebook">f</a>
+        <a href="#" aria-label="Instagram">ig</a>
+      </div>
+      <button class="nav-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-video">
+      <video autoplay muted loop playsinline>
+        <source src="video.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="eyebrow">Corretora desde 2016 · SUSEP · CRECI</div>
+    <h1>Proteção, previdência e patrimônio sob um só teto.</h1>
+    <p class="lede">A Lima Buarque Corretora de Seguros e Previdência agora também é corretora de imóveis. Seguro de vida, previdência privada, consórcio e, com o novo registro CRECI, acompanhamento completo na compra do seu imóvel.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+      <a href="#argos" class="btn btn-ghost">Ver empreendimento em lançamento</a>
+    </div>
+    <div class="switch" role="tablist" aria-label="Escolher área de interesse">
+      <button class="active" data-mode="gold" data-target="#servicos">Seguros & Previdência</button>
+      <button data-mode="teal" data-target="#imoveis">Imóveis</button>
+    </div>
+  </div>
+</header>
+
+<div class="trust">
+  <div class="wrap">
+    <div class="trust-item"><span class="num mono">2016</span> No mercado desde</div>
+    <div class="trust-item"><span class="num mono">SUSEP</span> Corretora de Seguros</div>
+    <div class="trust-item"><span class="num mono">CRECI</span> Corretor de Imóveis</div>
+    <div class="trust-item"><span class="num mono">ES · RJ</span> Escritórios em Vitória e Campos</div>
+  </div>
+</div>
+
+<section class="section" id="quemsomos">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Quem somos</span>
+      <h2>Lima Buarque Corretora de Seguros e Previdência</h2>
+      <p>Uma empresa comprometida com a qualidade do atendimento, oferecendo sempre os melhores produtos e serviços que se adequam às necessidades e ao estilo de vida de cada cliente.</p>
+    </div>
+    <div class="about">
+      <div class="about-block">
+        <h3>Missão</h3>
+        <p>Garantir a tranquilidade dos nossos clientes, oferecendo sempre soluções inovadoras para as mais variadas situações, minimizando riscos e solucionando problemas.</p>
+        <h3>Valores</h3>
+        <p>Prestar os serviços com excelência, visando a plena satisfação dos nossos clientes. Trabalhamos de forma ética e transparente, prezando pelo respeito mútuo.</p>
+      </div>
+      <div class="about-block">
+        <h3>Diferencial</h3>
+        <ul class="diff-list">
+          <li>Parceria com as maiores seguradoras do mercado</li>
+          <li>Ambiente empresarial agradável, com soluções feitas de forma amigável e natural</li>
+          <li>A vida é cheia de imprevistos — e o seguro garante a proteção financeira</li>
+          <li>Agora também com atuação em imóveis, com registro CRECI</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="servicos" style="background:#fff;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Serviços</span>
+      <h2>Seguros, previdência e consórcio</h2>
+      <p>Soluções pensadas para profissionais liberais, famílias e empresas — sempre com o respaldo de parceria com as maiores seguradoras do mercado.</p>
+    </div>
+    <div class="card-grid">
+      <div class="service-card">
+        <div class="icn">◆</div>
+        <h3>Vida Profissional</h3>
+        <p>Ideal para profissionais liberais: médicos, advogados, contadores e outros. Proteção em caso de morte ou invalidez por acidente, com indenização e valor pré-determinado por dias parados por doença ou acidente.</p>
+      </div>
+      <div class="service-card">
+        <div class="icn">⌂</div>
+        <h3>Consórcio de Imóveis</h3>
+        <p>Consórcio de Imóvel Porto Seguro, com parcelas a partir de R$ 349,00 sem juros, até 200 meses para pagar, créditos de R$ 55 mil a R$ 500 mil e possibilidade de uso do FGTS.</p>
+      </div>
+      <div class="service-card">
+        <div class="icn">◈</div>
+        <h3>Seguro de Previdência</h3>
+        <p>Planos VGBL (Vida Gerador de Benefícios Livres) e PGBL (Plano Gerador de Benefícios Livres), unindo previdência e cobertura por morte em um só produto.</p>
+      </div>
+      <div class="service-card">
+        <div class="icn">⚖</div>
+        <h3>Responsabilidade Civil Profissional</h3>
+        <p>Indicado para médicos, advogados, contadores e outros profissionais liberais. Reembolso de indenização até limite pré-determinado em caso de ação judicial por erro profissional.</p>
+      </div>
+      <div class="service-card">
+        <div class="icn">✚</div>
+        <h3>Seguro Saúde</h3>
+        <p>Para pessoas físicas e empresas. Cobertura médico-hospitalar através de ampla rede referenciada, com planos que atendem à necessidade de cada cliente.</p>
+      </div>
+      <div class="service-card" style="border-color:var(--teal); background:var(--teal-soft);">
+        <div class="icn" style="background:#fff; color:var(--teal);">＋</div>
+        <h3>Novo: Corretagem de Imóveis</h3>
+        <p>Agora, além dos seguros, acompanhamento completo na compra do seu imóvel — da escolha do empreendimento à entrega das chaves. <a href="#imoveis" style="color:var(--teal); font-weight:600;">Conheça →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="imoveis">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Duas frentes, um atendimento</span>
+      <h2>Previdência e imóveis, lado a lado</h2>
+      <p>Com o registro CRECI, a Lima Buarque passa a oferecer também consultoria imobiliária completa — mantendo o mesmo padrão de confiança de quem já cuida de seguros e previdência há anos.</p>
+    </div>
+    <div class="spine-grid">
+      <div class="service-col left">
+        <div class="service-icon">◈</div>
+        <h3>Previdência Privada</h3>
+        <p>Planejamento de aposentadoria e proteção patrimonial, com simulações comparando planos VGBL, PGBL e seguradoras.</p>
+        <ul>
+          <li>Simulação personalizada de aposentadoria</li>
+          <li>Comparativo entre planos e seguradoras</li>
+          <li>Estratégias de sucessão patrimonial</li>
+          <li>Revisão periódica do plano</li>
+        </ul>
+      </div>
+      <div class="spine-line">
+        <div class="spine-badge top mono">SUSEP</div>
+        <div class="spine-badge bottom mono">CRECI</div>
+      </div>
+      <div class="service-col right">
+        <div class="service-icon">⌂</div>
+        <h3>Consultoria Imobiliária</h3>
+        <p>Acompanhamento de ponta a ponta na compra de imóveis, da escolha do empreendimento até a entrega das chaves.</p>
+        <ul>
+          <li>Análise de empreendimentos e construtoras</li>
+          <li>Simulação de financiamento</li>
+          <li>Visitas e negociação acompanhadas</li>
+          <li>Acompanhamento até a entrega das chaves</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="argos" style="background:#fff;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Em destaque</span>
+      <h2>Lançamento em parceria com a Construtora ARGOS</h2>
+    </div>
+    <div class="feature-card">
+      <div>
+        <div class="tag-row">
+          <span class="pill">Lançamento</span>
+          <span class="pill">Construtora ARGOS</span>
+          <span class="pill">Atendimento direto com João</span>
+        </div>
+        <h3>[Nome do empreendimento]</h3>
+        <p>Unidades disponíveis para reserva com condições exclusivas de lançamento. Simulação de financiamento e visita guiada com acompanhamento de João, corretor CRECI.</p>
+        <div class="feature-stats">
+          <div class="stat"><div class="val">[X]m²</div><div class="lbl">Metragens disponíveis</div></div>
+          <div class="stat"><div class="val">[XX/20XX]</div><div class="lbl">Previsão de entrega</div></div>
+          <div class="stat"><div class="val">[Bairro]</div><div class="lbl">Localização</div></div>
+          <div class="stat"><div class="val">[X]x</div><div class="lbl">Parcelas na obra</div></div>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <svg viewBox="0 0 200 200" fill="none">
+          <rect x="20" y="70" width="45" height="110" rx="3" fill="rgba(184,147,78,0.15)" stroke="#B8934E" stroke-width="1.5"/>
+          <rect x="78" y="40" width="45" height="140" rx="3" fill="rgba(30,138,121,0.15)" stroke="#1E8A79" stroke-width="1.5"/>
+          <rect x="136" y="90" width="45" height="90" rx="3" fill="rgba(184,147,78,0.15)" stroke="#B8934E" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+    <p style="margin-top:20px; color:var(--slate); font-size:0.85rem;">* Substitua os campos entre colchetes pelos dados reais do empreendimento antes de publicar.</p>
+  </div>
+</section>
+
+<section class="section" id="contato">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">Contato</span>
+      <h2>Fale com a gente</h2>
+      <p>Atendimento para seguros, previdência, consórcio e agora também para imóveis.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3>Peça um orçamento</h3>
+        <p>Fale direto pelo WhatsApp ou telefone — atendimento tanto para seguros/previdência quanto para imóveis.</p>
+        <div class="contact-actions">
+          <button class="btn btn-primary" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+          <a class="btn btn-ghost" href="https://wa.me/5500009993333" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+        </div>
+      </div>
+      <div>
+        <div class="office">
+          <span class="city mono">Vitória · ES</span>
+          <p>Av. Nossa Senhora da Penha, 2796<br>Santa Luíza, Vitória - ES<br>CEP 29045-402<br><a href="tel:08009993333" style="color:var(--navy-deep); font-weight:600;">0800 999 3333</a></p>
+          <div class="cnpj">CNPJ (matriz) 22.594.608/0001-24</div>
+        </div>
+        <div class="office">
+          <span class="city mono">Filial Campos · RJ</span>
+          <p>Rua Barão do Amazonas, 111, Sala 406<br>Centro, Campos dos Goytacazes - RJ<br>CEP 28010-030</p>
+          <div class="cnpj">CNPJ (filial) 22.594.608/0002-05</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fbrand">Lima Buarque</div>
+    <div>Seguros · Previdência · SUSEP &nbsp;|&nbsp; Imóveis · CRECI</div>
+    <div>© 2026 — limabuarque.com.br</div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="orcamentoModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeOrcamento()" aria-label="Fechar">✕</button>
+    <h3>Peça o seu orçamento</h3>
+    <p class="sub">Preencha o formulário abaixo e entraremos em contato com você.</p>
+    <form id="orcamentoForm">
+      <!-- IMPORTANTE: troque "COLE_SUA_ACCESS_KEY_AQUI" pela Access Key gerada em web3forms.com -->
+      <input type="hidden" name="access_key" value="COLE_SUA_ACCESS_KEY_AQUI">
+      <input type="hidden" name="subject" value="Novo pedido de orçamento — Lima Buarque">
+      <input type="checkbox" name="botcheck" style="display:none;">
+
+      <div class="form-grid">
+        <div class="form-field full">
+          <label for="of-nome">Nome</label>
+          <input type="text" id="of-nome" name="Nome" required>
+        </div>
+        <div class="form-field">
+          <label for="of-email">E-mail</label>
+          <input type="email" id="of-email" name="E-mail" required>
+        </div>
+        <div class="form-field">
+          <label for="of-fone">Fixo ou celular</label>
+          <input type="tel" id="of-fone" name="Telefone" required>
+        </div>
+        <div class="form-field">
+          <label for="of-prof">Profissão</label>
+          <input type="text" id="of-prof" name="Profissão">
+        </div>
+        <div class="form-field">
+          <label for="of-nasc">Data de nascimento</label>
+          <input type="date" id="of-nasc" name="Data de nascimento">
+        </div>
+        <div class="form-field full">
+          <label for="of-servico">Serviço</label>
+          <select id="of-servico" name="Serviço" required>
+            <option value="">(Escolha o serviço)</option>
+            <option>Vida Profissional</option>
+            <option>Consórcio de Imóveis</option>
+            <option>Seguro de Previdência</option>
+            <option>Responsabilidade Civil Profissional</option>
+            <option>Seguro Saúde</option>
+            <option>Corretagem de Imóveis (novo)</option>
+            <option>Empreendimento ARGOS</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label for="of-msg">Mensagem</label>
+          <textarea id="of-msg" name="Mensagem"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="form-submit" id="of-submit">Pedir orçamento</button>
+      <div class="form-status" id="of-status"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.switch button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.switch button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      document.documentElement.style.setProperty('--accent', mode==='teal' ? 'var(--teal)' : 'var(--gold)');
+      document.documentElement.style.setProperty('--accent-soft', mode==='teal' ? 'var(--teal-soft)' : 'var(--gold-soft)');
+      const target = document.querySelector(btn.dataset.target);
+      if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+
+  function openOrcamento(){
+    document.getElementById('orcamentoModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeOrcamento(){
+    document.getElementById('orcamentoModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('orcamentoModal').addEventListener('click', (e)=>{
+    if(e.target.id === 'orcamentoModal') closeOrcamento();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeOrcamento();
+  });
+
+  const orcamentoForm = document.getElementById('orcamentoForm');
+  const orcamentoStatus = document.getElementById('of-status');
+  const orcamentoSubmit = document.getElementById('of-submit');
+
+  orcamentoForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    orcamentoSubmit.disabled = true;
+    orcamentoSubmit.textContent = 'Enviando...';
+    orcamentoStatus.className = 'form-status';
+    orcamentoStatus.textContent = '';
+
+    const formData = new FormData(orcamentoForm);
+    try{
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+      const result = await response.json();
+      if(result.success){
+        orcamentoStatus.textContent = 'Recebemos seu pedido! Em breve entraremos em contato.';
+        orcamentoStatus.className = 'form-status ok';
+        orcamentoForm.reset();
+        setTimeout(closeOrcamento, 2200);
+      } else {
+        throw new Error(result.message || 'Falha no envio');
+      }
+    } catch(err){
+      orcamentoStatus.textContent = 'Não foi possível enviar agora. Tente novamente ou chame no WhatsApp.';
+      orcamentoStatus.className = 'form-status err';
+    } finally {
+      orcamentoSubmit.disabled = false;
+      orcamentoSubmit.textContent = 'Pedir orçamento';
+    }
+  });
+</script>
+
+</body>
+</html>
