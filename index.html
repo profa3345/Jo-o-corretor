@@ -316,6 +316,19 @@
   .imovel-body .meta{display:flex; gap:12px; color:var(--slate); font-size:0.82rem; margin-bottom:10px;}
   .imovel-body .addr{color:var(--slate); font-size:0.86rem; margin-bottom:14px;}
   .imovel-body a.btn, .imovel-body button.btn{width:100%; padding:11px; font-size:0.85rem;}
+  .compare-check{display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--slate); margin-bottom:12px; cursor:pointer; user-select:none;}
+  .compare-check input{width:16px; height:16px; accent-color:var(--gold); cursor:pointer;}
+  .compare-bar{
+    position:fixed; left:50%; bottom:-100px; transform:translateX(-50%); z-index:185;
+    background:var(--navy-deep); color:#fff; border-radius:16px; padding:16px 24px;
+    display:flex; align-items:center; gap:20px; box-shadow:0 20px 50px -20px rgba(0,0,0,0.4);
+    transition:bottom .3s ease;
+  }
+  .compare-bar.show{bottom:24px;}
+  #compareTable th, #compareTable td{padding:10px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  #compareTable th{font-family:'Space Grotesk'; color:var(--navy-deep); white-space:nowrap;}
+  #compareTable td.label{font-weight:600; color:var(--navy-deep); white-space:nowrap; background:var(--paper);}
+  @media(max-width:600px){ .compare-bar{left:12px; right:12px; transform:none; flex-direction:column; align-items:stretch; text-align:center;} .compare-bar.show{bottom:12px;} }
 
   /* FINANCING CALCULATOR */
   .calc-box{display:grid; grid-template-columns:1.2fr 1fr; gap:32px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:36px; align-items:center;}
@@ -576,7 +589,7 @@
     </div>
     <div class="nav-right">
       <span class="nav-divider"></span>
-      <button class="nav-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+      <button class="nav-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Consultoria Gratuita</button>
       <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span>
       </button>
@@ -596,11 +609,11 @@
   <a href="#imoveis">Imóveis</a>
   <a href="#argos">Empreendimento</a>
   <a href="#contato">Contato</a>
-  <button class="mobile-menu-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+  <button class="mobile-menu-cta" onclick="openOrcamento()" style="border:none; cursor:pointer;">Consultoria Gratuita</button>
 </nav>
 
 <header class="hero">
-  <video class="hero-bg-video" id="heroVideo" autoplay muted loop playsinline>
+  <video class="hero-bg-video" id="heroVideo" autoplay muted loop playsinline preload="metadata">
     <source src="video.mp4" type="video/mp4">
   </video>
   <button type="button" class="video-sound-toggle" id="videoSoundToggle" aria-label="Ativar som do vídeo">
@@ -738,6 +751,10 @@
     </div>
 
     <div class="filter-bar">
+      <div class="filter-field" style="flex:2; min-width:220px;">
+        <label>Busca rápida</label>
+        <input type="text" id="filtroBusca" placeholder='Ex: "apartamento em Jardim Camburi" ou "casa até 900 mil"'>
+      </div>
       <div class="filter-field">
         <label>Cidade</label>
         <select id="filtroCidade"><option value="">Todas</option></select>
@@ -948,7 +965,7 @@
         <h3>Peça um orçamento</h3>
         <p>Fale direto pelo WhatsApp ou telefone — temos atendimento específico para cada área.</p>
         <div class="contact-actions">
-          <button class="btn btn-primary" onclick="openOrcamento()" style="border:none; cursor:pointer;">Peça um orçamento</button>
+          <button class="btn btn-primary" onclick="openOrcamento()" style="border:none; cursor:pointer;">Solicitar Consultoria Gratuita</button>
           <a class="btn btn-ghost" href="https://wa.me/5527998439801" target="_blank" rel="noopener">Chamar no WhatsApp</a>
         </div>
       </div>
@@ -1086,6 +1103,25 @@
     <a class="btn btn-primary" id="detailWhats" target="_blank" rel="noopener" style="width:100%; justify-content:center; margin-top:10px;">Falar sobre este imóvel no WhatsApp</a>
 
     <div id="detailSimilar" style="margin-top:32px;"></div>
+  </div>
+</div>
+
+<div class="compare-bar" id="compareBar">
+  <span id="compareBarLabel">0 imóveis selecionados</span>
+  <div style="display:flex; gap:10px;">
+    <button type="button" class="btn btn-ghost" id="compareClearBtn" style="border-color:rgba(255,255,255,0.3); color:#fff;">Limpar</button>
+    <button type="button" class="btn btn-primary" id="compareOpenBtn">Comparar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="compareModal">
+  <div class="modal-box" style="max-width:900px;">
+    <button class="modal-close" id="compareCloseBtn">✕</button>
+    <h3>Comparar imóveis</h3>
+    <p class="sub">Lado a lado, para facilitar sua decisão.</p>
+    <div style="overflow-x:auto;">
+      <table id="compareTable" style="width:100%; border-collapse:collapse; font-size:0.9rem;"></table>
+    </div>
   </div>
 </div>
 
@@ -1311,6 +1347,7 @@
   const tagLabels = { semana: '🏆 Destaque da Semana', oportunidade: '🏅 Oportunidade', visitado: '🔥 Mais visitado' };
 
   let allImoveis = [];
+  let compareIds = [];
 
   function escapeHtml(str){
     const d = document.createElement('div');
@@ -1337,6 +1374,9 @@
         ${tagKey ? `<span class="imovel-tag ${tagKey}">${tagLabels[tagKey]}</span>` : ''}
       </div>
       <div class="imovel-body">
+        <label class="compare-check" onclick="event.stopPropagation();">
+          <input type="checkbox" data-compare-id="${id}"> Comparar
+        </label>
         <h3>${escapeHtml(d.titulo || 'Imóvel disponível')}</h3>
         ${d.preco ? `<div class="price">${escapeHtml(d.preco)}</div>` : ''}
         <div class="meta">${d.area ? `<span>${escapeHtml(d.area)}</span>` : ''}${d.quartos ? `<span>${escapeHtml(d.quartos)} quartos</span>` : ''}${d.cidade ? `<span>${escapeHtml(d.cidade)}</span>` : ''}</div>
@@ -1346,7 +1386,80 @@
     `;
     card.querySelector('[data-open-id]').addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(id); });
     card.addEventListener('click', ()=> openDetail(id));
+    const checkbox = card.querySelector('[data-compare-id]');
+    checkbox.checked = compareIds.includes(id);
+    checkbox.addEventListener('change', ()=> toggleCompare(id, checkbox));
     return card;
+  }
+
+  function toggleCompare(id, checkboxEl){
+    if (checkboxEl.checked){
+      if (compareIds.length >= 3){
+        checkboxEl.checked = false;
+        alert('Você pode comparar até 3 imóveis por vez.');
+        return;
+      }
+      compareIds.push(id);
+    } else {
+      compareIds = compareIds.filter(cid => cid !== id);
+    }
+    updateCompareBar();
+  }
+
+  function updateCompareBar(){
+    const bar = document.getElementById('compareBar');
+    const label = document.getElementById('compareBarLabel');
+    label.textContent = `${compareIds.length} imóve${compareIds.length === 1 ? 'l' : 'is'} selecionado${compareIds.length === 1 ? '' : 's'}`;
+    const openBtn = document.getElementById('compareOpenBtn');
+    openBtn.disabled = compareIds.length < 2;
+    openBtn.style.opacity = compareIds.length < 2 ? '0.5' : '1';
+    openBtn.style.cursor = compareIds.length < 2 ? 'not-allowed' : 'pointer';
+    bar.classList.toggle('show', compareIds.length > 0);
+  }
+
+  function renderCompareTable(){
+    const table = document.getElementById('compareTable');
+    const items = compareIds.map(id => allImoveis.find(i => i.id === id)).filter(Boolean);
+    if (!items.length){ table.innerHTML = ''; return; }
+    const rows = [
+      { label: '', get: (d)=> '' },
+      { label: 'Preço', get: (d)=> d.preco || '—' },
+      { label: 'Cidade', get: (d)=> d.cidade || '—' },
+      { label: 'Endereço', get: (d)=> d.endereco || '—' },
+      { label: 'Quartos', get: (d)=> d.quartos || '—' },
+      { label: 'Área', get: (d)=> d.area || '—' },
+      { label: 'Status', get: (d)=> statusLabels[d.status || 'disponivel'] || '—' },
+    ];
+    let html = '<thead><tr><th></th>';
+    items.forEach(({ data: d }) => { html += `<th>${escapeHtml(d.titulo || 'Imóvel')}</th>`; });
+    html += '</tr></thead><tbody>';
+    rows.slice(1).forEach(row => {
+      html += `<tr><td class="label">${row.label}</td>`;
+      items.forEach(({ data: d }) => { html += `<td>${escapeHtml(String(row.get(d)))}</td>`; });
+      html += '</tr>';
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+  }
+
+  document.getElementById('compareClearBtn').addEventListener('click', ()=>{
+    compareIds = [];
+    updateCompareBar();
+    document.querySelectorAll('[data-compare-id]').forEach(cb => { cb.checked = false; });
+  });
+  document.getElementById('compareOpenBtn').addEventListener('click', ()=>{
+    if (compareIds.length < 2) return;
+    renderCompareTable();
+    document.getElementById('compareModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+  document.getElementById('compareCloseBtn').addEventListener('click', closeCompareModal);
+  document.getElementById('compareModal').addEventListener('click', (e)=>{
+    if (e.target.id === 'compareModal') closeCompareModal();
+  });
+  function closeCompareModal(){
+    document.getElementById('compareModal').classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   function renderGrid(list){
@@ -1372,11 +1485,33 @@
     });
   }
 
+  function parseSmartSearch(text){
+    let maxPrice = 0;
+    let remaining = text || '';
+    const priceMatch = remaining.match(/at[ée]\s*(?:r\$)?\s*([\d.,]+)\s*(mil|milh[aã]o|milh[oõ]es)?/i);
+    if (priceMatch){
+      let num = parseFloat(priceMatch[1].replace(/\./g,'').replace(',', '.')) || 0;
+      const unit = (priceMatch[2] || '').toLowerCase();
+      if (unit === 'mil') num *= 1000;
+      else if (unit.startsWith('milh')) num *= 1000000;
+      maxPrice = num;
+      remaining = remaining.replace(priceMatch[0], ' ');
+    }
+    const stopwords = new Set(['em','de','da','do','das','dos','um','uma','ate','até','com','para','no','na','e']);
+    const keywords = remaining
+      .toLowerCase()
+      .split(/[^a-zà-úçãõâêô0-9]+/i)
+      .filter(w => w.length >= 3 && !stopwords.has(w));
+    return { maxPrice, keywords };
+  }
+
   function applyFilters(){
     const cidade = document.getElementById('filtroCidade').value;
     const finalidade = document.getElementById('filtroFinalidade').value;
     const quartosMin = parseInt(document.getElementById('filtroQuartos').value, 10) || 0;
     const valorMax = parseFloat((document.getElementById('filtroValor').value || '').replace(/\D/g,'')) || 0;
+    const busca = (document.getElementById('filtroBusca').value || '').trim();
+    const smart = busca ? parseSmartSearch(busca) : { maxPrice: 0, keywords: [] };
 
     const filtered = allImoveis.filter(({ data: d }) => {
       if (cidade && d.cidade !== cidade) return false;
@@ -1386,12 +1521,24 @@
         const preco = parseFloat((d.preco || '').replace(/\D/g,'')) || 0;
         if (preco && preco > valorMax) return false;
       }
+      if (smart.maxPrice){
+        const preco = parseFloat((d.preco || '').replace(/\D/g,'')) || 0;
+        if (preco && preco > smart.maxPrice) return false;
+      }
+      if (smart.keywords.length){
+        const haystack = [d.titulo, d.endereco, d.cidade, d.bairro].filter(Boolean).join(' ').toLowerCase();
+        const allMatch = smart.keywords.every(k => haystack.includes(k));
+        if (!allMatch) return false;
+      }
       return true;
     });
     renderGrid(filtered);
   }
 
   document.getElementById('filtrarBtn').addEventListener('click', applyFilters);
+  document.getElementById('filtroBusca').addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') applyFilters();
+  });
 
   async function loadImoveis(){
     const grid = document.getElementById('imoveisGrid');
