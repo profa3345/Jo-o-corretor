@@ -99,6 +99,30 @@
   .conv-badge.mid{background:var(--gold-soft); color:var(--gold);}
   .conv-badge.low{background:var(--red-soft); color:var(--red);}
   @media(max-width:900px){ .stats-overview{grid-template-columns:1fr;} .stats-grid{grid-template-columns:1fr;} }
+
+  .highlight-row{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:24px;}
+  .highlight-badge{
+    flex:1; min-width:220px; background:var(--navy-deep); color:#fff; border-radius:14px; padding:18px 20px;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .highlight-badge .lbl{font-family:'IBM Plex Mono'; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.55);}
+  .highlight-badge .val{font-family:'Space Grotesk'; font-size:1.15rem; font-weight:700; color:var(--gold);}
+
+  .leads-table-wrap{background:#fff; border:1px solid var(--line); border-radius:16px; overflow-x:auto;}
+  .leads-table{width:100%; border-collapse:collapse; font-size:0.85rem; min-width:760px;}
+  .leads-table th{text-align:left; color:var(--slate); font-weight:500; padding:12px 14px; border-bottom:1px solid var(--line); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.03em; background:var(--paper);}
+  .leads-table td{padding:12px 14px; border-bottom:1px solid var(--line); color:var(--navy-deep); vertical-align:middle;}
+  .leads-table tr:last-child td{border-bottom:none;}
+  .lead-status-select{
+    padding:6px 10px; border-radius:100px; border:1px solid var(--line); font-family:'Inter'; font-size:0.78rem; font-weight:600;
+    background:var(--paper); color:var(--navy-deep); cursor:pointer;
+  }
+  .lead-status-select.novo{background:var(--gold-soft); color:var(--gold);}
+  .lead-status-select.contatado{background:rgba(91,107,133,0.12); color:var(--slate);}
+  .lead-status-select.proposta{background:rgba(30,138,121,0.12); color:var(--teal);}
+  .lead-status-select.negociacao{background:rgba(184,147,78,0.2); color:var(--gold);}
+  .lead-status-select.fechado{background:var(--teal-soft); color:var(--teal);}
+  .lead-status-select.perdido{background:var(--red-soft); color:var(--red);}
 </style>
 </head>
 <body>
@@ -147,7 +171,20 @@
         <div class="loading-state">Carregando estatísticas...</div>
       </div>
 
+      <div class="highlight-row" id="highlightRow"></div>
+
       <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="top-row" style="margin-top:56px;">
+        <div>
+          <h1>Leads (pedidos de orçamento)</h1>
+          <p>Acompanhe o andamento de cada contato — atualize o status conforme a negociação avança.</p>
+        </div>
+      </div>
+
+      <div id="leadsArea">
+        <div class="loading-state">Carregando leads...</div>
+      </div>
 
       <div class="top-row" style="margin-top:56px;">
         <div>
@@ -245,6 +282,7 @@ onAuthStateChanged(auth, (user) => {
     dashboard.style.display = 'block';
     loadItems();
     loadStats();
+    loadLeads();
   } else {
     loginScreen.style.display = 'flex';
     dashboard.style.display = 'none';
@@ -343,6 +381,26 @@ async function loadStats(){
     const servicosCount = countBy(rawLeads, l => l.servico);
     const topServicos = Object.entries(servicosCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
 
+    // Destaques: campanha campeã (mais leads) e serviço campeão
+    const highlightEl = document.getElementById('highlightRow');
+    const campanhaCampea = linhasCampanha.find(r => r.leads > 0) || linhasCampanha[0];
+    const servicoCampeao = topServicos[0];
+    const origemCampea = topOrigens[0];
+    highlightEl.innerHTML = `
+      <div class="highlight-badge">
+        <span class="lbl">🏆 Campanha campeã</span>
+        <span class="val">${campanhaCampea ? escapeHtml(campanhaCampea.campanha) : '—'}</span>
+      </div>
+      <div class="highlight-badge">
+        <span class="lbl">🥇 Serviço campeão</span>
+        <span class="val">${servicoCampeao ? escapeHtml(servicoCampeao[0]) : '—'}</span>
+      </div>
+      <div class="highlight-badge">
+        <span class="lbl">📍 Melhor origem</span>
+        <span class="val">${origemCampea ? escapeHtml(origemCampea[0]) : '—'}</span>
+      </div>
+    `;
+
     gridEl.innerHTML = `
       <div class="stat-card" style="grid-column:1/-1;">
         <h4>Campanhas: visitas × leads × conversão</h4>
@@ -377,6 +435,68 @@ async function loadStats(){
     `;
   } catch(err){
     overviewEl.innerHTML = '<div class="empty-state">Não foi possível carregar as estatísticas: ' + escapeHtml(err.message) + '</div>';
+  }
+}
+
+// ---------- LEADS (mini-CRM) ----------
+const STATUS_LABELS = {
+  novo: 'Novo', contatado: 'Contatado', proposta: 'Proposta enviada',
+  negociacao: 'Negociação', fechado: 'Fechado', perdido: 'Perdido',
+};
+
+async function loadLeads(){
+  const el = document.getElementById('leadsArea');
+  try{
+    const q = query(collection(db, 'leads'), orderBy('timestamp', 'desc'), limit(300));
+    const snap = await getDocs(q);
+    if (snap.empty){
+      el.innerHTML = '<div class="empty-state">Nenhum lead registrado ainda.</div>';
+      return;
+    }
+    const rows = [];
+    snap.forEach(docSnap => rows.push({ id: docSnap.id, ...docSnap.data() }));
+
+    const wrap = document.createElement('div');
+    wrap.className = 'leads-table-wrap';
+    wrap.innerHTML = `
+      <table class="leads-table">
+        <thead>
+          <tr><th>Data</th><th>Nome</th><th>Contato</th><th>Serviço</th><th>Campanha</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr>
+              <td>${formatTimestamp(r.timestamp)}</td>
+              <td>${escapeHtml(r.nome || '—')}</td>
+              <td>${escapeHtml(r.telefone || r.email || '—')}</td>
+              <td>${escapeHtml(r.servico || '—')}</td>
+              <td>${escapeHtml(r.utm_campaign || '(sem campanha)')}</td>
+              <td>
+                <select class="lead-status-select ${r.status || 'novo'}" data-id="${r.id}">
+                  ${Object.entries(STATUS_LABELS).map(([k, v]) => `<option value="${k}" ${((r.status||'novo')===k) ? 'selected' : ''}>${v}</option>`).join('')}
+                </select>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+    el.innerHTML = '';
+    el.appendChild(wrap);
+
+    wrap.querySelectorAll('.lead-status-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const newStatus = sel.value;
+        sel.className = 'lead-status-select ' + newStatus;
+        try{
+          await updateDoc(doc(db, 'leads', sel.dataset.id), { status: newStatus });
+        } catch(err){
+          alert('Erro ao atualizar status: ' + err.message);
+        }
+      });
+    });
+  } catch(err){
+    el.innerHTML = '<div class="empty-state">Não foi possível carregar os leads: ' + escapeHtml(err.message) + '</div>';
   }
 }
 
