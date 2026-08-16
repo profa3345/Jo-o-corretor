@@ -100,6 +100,25 @@
   .conv-badge.low{background:var(--red-soft); color:var(--red);}
   @media(max-width:900px){ .stats-overview{grid-template-columns:1fr;} .stats-grid{grid-template-columns:1fr;} }
 
+  .period-bar{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:22px;}
+  .period-tabs{display:inline-flex; padding:4px; border-radius:100px; background:#fff; border:1px solid var(--line); gap:3px;}
+  .period-tab{font-size:0.82rem; padding:8px 16px; border-radius:100px; background:transparent; border:none; color:var(--slate); cursor:pointer; font-weight:600; transition:all .2s;}
+  .period-tab.active{background:var(--navy-deep); color:#fff;}
+  .period-custom{display:flex; align-items:center; gap:8px;}
+  .period-custom input[type="date"]{padding:8px 10px; border:1px solid var(--line); border-radius:8px; font-family:'Inter'; font-size:0.82rem;}
+  .period-custom span{color:var(--slate); font-size:0.82rem;}
+
+  .compare-tag{font-family:'IBM Plex Mono'; font-size:0.72rem; margin-top:6px; display:inline-block; padding:2px 8px; border-radius:100px;}
+  .compare-tag.up{background:var(--teal-soft); color:var(--teal);}
+  .compare-tag.down{background:var(--red-soft); color:var(--red);}
+  .compare-tag.flat{background:rgba(91,107,133,0.12); color:var(--slate);}
+
+  .chart-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:24px;}
+  .chart-card h4{font-size:0.9rem; margin-bottom:16px; color:var(--navy-deep);}
+  .chart-legend{display:flex; gap:18px; margin-top:10px; font-size:0.78rem; color:var(--slate);}
+  .chart-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .chart-legend .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+
   .highlight-row{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:24px;}
   .highlight-badge{
     flex:1; min-width:220px; background:var(--navy-deep); color:#fff; border-radius:14px; padding:18px 20px;
@@ -167,11 +186,31 @@
         </div>
       </div>
 
+      <div class="period-bar">
+        <div class="period-tabs" id="periodTabs">
+          <button type="button" class="period-tab" data-period="hoje">Hoje</button>
+          <button type="button" class="period-tab active" data-period="7d">7 dias</button>
+          <button type="button" class="period-tab" data-period="30d">30 dias</button>
+          <button type="button" class="period-tab" data-period="custom">Personalizado</button>
+        </div>
+        <div class="period-custom" id="periodCustom" style="display:none;">
+          <input type="date" id="periodStart">
+          <span>até</span>
+          <input type="date" id="periodEnd">
+          <button type="button" class="btn btn-dark" id="periodApplyBtn">Aplicar</button>
+        </div>
+      </div>
+
       <div class="stats-overview" id="statsOverview">
         <div class="loading-state">Carregando estatísticas...</div>
       </div>
 
       <div class="highlight-row" id="highlightRow"></div>
+
+      <div class="chart-card" id="chartCard" style="display:none;">
+        <h4>Visitas × Leads por dia</h4>
+        <div id="chartSvgWrap"></div>
+      </div>
 
       <div class="stats-grid" id="statsGrid"></div>
 
@@ -223,6 +262,10 @@
       <div class="field">
         <label for="f-descricao">Descrição</label>
         <textarea id="f-descricao" rows="4" placeholder="Descreva o serviço, para quem é indicado e o que cobre..."></textarea>
+      </div>
+      <div class="field">
+        <label for="f-url">Link para página completa (opcional)</label>
+        <input type="text" id="f-url" placeholder="Ex: seguro-cirurgias-amparo.html">
       </div>
       <div class="checkbox-field">
         <input type="checkbox" id="f-ativo" checked>
@@ -312,6 +355,7 @@ logoutBtn.addEventListener('click', () => signOut(auth));
 // ---------- STATS (visitas / leads / campanhas / conversão) ----------
 let rawVisitas = [];
 let rawLeads = [];
+let currentPeriod = '7d';
 
 function hostnameFromReferrer(ref){
   if (!ref || ref === 'direto') return 'acesso direto';
@@ -333,110 +377,278 @@ function convBadgeClass(pct){
   return 'low';
 }
 
+function toDate(ts){
+  if (!ts) return null;
+  return ts.toDate ? ts.toDate() : new Date(ts);
+}
+
+function dateRangeFor(period, customStart, customEnd){
+  const now = new Date();
+  const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+  let start, end = endOfToday;
+  if (period === 'hoje'){
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  } else if (period === '7d'){
+    start = new Date(endOfToday); start.setDate(start.getDate() - 6); start.setHours(0,0,0,0);
+  } else if (period === '30d'){
+    start = new Date(endOfToday); start.setDate(start.getDate() - 29); start.setHours(0,0,0,0);
+  } else if (period === 'custom' && customStart && customEnd){
+    start = new Date(customStart + 'T00:00:00');
+    end = new Date(customEnd + 'T23:59:59');
+  } else {
+    start = new Date(endOfToday); start.setDate(start.getDate() - 6); start.setHours(0,0,0,0);
+  }
+  return { start, end };
+}
+
+function previousRange(start, end){
+  const lengthMs = end.getTime() - start.getTime();
+  const prevEnd = new Date(start.getTime() - 1);
+  const prevStart = new Date(prevEnd.getTime() - lengthMs);
+  return { start: prevStart, end: prevEnd };
+}
+
+function filterByRange(list, start, end){
+  return list.filter(item => {
+    const d = toDate(item.timestamp);
+    return d && d >= start && d <= end;
+  });
+}
+
+function pctChange(current, previous){
+  if (previous === 0) return current === 0 ? 0 : 100;
+  return ((current - previous) / previous) * 100;
+}
+
+function renderCompareTag(current, previous){
+  const change = pctChange(current, previous);
+  if (Math.abs(change) < 0.5) return `<span class="compare-tag flat">= vs período anterior</span>`;
+  const cls = change > 0 ? 'up' : 'down';
+  const arrow = change > 0 ? '↑' : '↓';
+  return `<span class="compare-tag ${cls}">${arrow} ${Math.abs(change).toFixed(0)}% vs período anterior</span>`;
+}
+
+function dayKey(d){ return d.toISOString().slice(0,10); }
+
+function buildDailySeries(visitas, leads, start, end){
+  const days = [];
+  const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  while (cursor <= endDay){
+    days.push(dayKey(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  const visitasPorDia = {}; visitas.forEach(v => { const k = dayKey(toDate(v.timestamp)); visitasPorDia[k] = (visitasPorDia[k]||0)+1; });
+  const leadsPorDia = {}; leads.forEach(l => { const k = dayKey(toDate(l.timestamp)); leadsPorDia[k] = (leadsPorDia[k]||0)+1; });
+  return days.map(k => ({ day: k, visitas: visitasPorDia[k]||0, leads: leadsPorDia[k]||0 }));
+}
+
+function renderChart(series){
+  const chartCard = document.getElementById('chartCard');
+  const wrap = document.getElementById('chartSvgWrap');
+  if (series.length < 2){ chartCard.style.display = 'none'; return; }
+  chartCard.style.display = 'block';
+
+  const W = 900, H = 220, padL = 34, padB = 24, padT = 12, padR = 12;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const maxVal = Math.max(1, ...series.map(s => Math.max(s.visitas, s.leads)));
+  const stepX = series.length > 1 ? innerW / (series.length - 1) : 0;
+
+  const toXY = (i, val) => {
+    const x = padL + i * stepX;
+    const y = padT + innerH - (val / maxVal) * innerH;
+    return [x, y];
+  };
+
+  const visitasPts = series.map((s,i) => toXY(i, s.visitas).join(',')).join(' ');
+  const leadsPts = series.map((s,i) => toXY(i, s.leads).join(',')).join(' ');
+
+  const labelEvery = Math.ceil(series.length / 7);
+  const labels = series.map((s,i) => {
+    if (i % labelEvery !== 0 && i !== series.length-1) return '';
+    const [x] = toXY(i, 0);
+    const d = new Date(s.day + 'T00:00:00');
+    const lbl = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+    return `<text x="${x}" y="${H-6}" font-size="10" fill="#5B6B85" text-anchor="middle" font-family="IBM Plex Mono">${lbl}</text>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;">
+      <line x1="${padL}" y1="${padT+innerH}" x2="${W-padR}" y2="${padT+innerH}" stroke="#E4E7EE" stroke-width="1"/>
+      <polyline points="${visitasPts}" fill="none" stroke="#1B2A4A" stroke-width="2.5"/>
+      <polyline points="${leadsPts}" fill="none" stroke="#B8934E" stroke-width="2.5"/>
+      ${labels}
+    </svg>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:#1B2A4A;"></span>Visitas</span>
+      <span><span class="dot" style="background:#B8934E;"></span>Leads</span>
+    </div>
+  `;
+}
+
 async function loadStats(){
   const overviewEl = document.getElementById('statsOverview');
-  const gridEl = document.getElementById('statsGrid');
   try{
     const [visitasSnap, leadsSnap] = await Promise.all([
       getDocs(query(collection(db, 'visitas'), orderBy('timestamp', 'desc'), limit(5000))),
       getDocs(query(collection(db, 'leads'), orderBy('timestamp', 'desc'), limit(5000))),
     ]);
-
     rawVisitas = []; visitasSnap.forEach(d => rawVisitas.push(d.data()));
     rawLeads = []; leadsSnap.forEach(d => rawLeads.push(d.data()));
-
-    const totalVisitas = rawVisitas.length;
-    const totalLeads = rawLeads.length;
-    const taxaGeral = totalVisitas ? ((totalLeads / totalVisitas) * 100).toFixed(1) : '0.0';
-
-    overviewEl.innerHTML = `
-      <div class="stat-card">
-        <div class="num">${totalVisitas}</div>
-        <div class="lbl">${totalVisitas >= 5000 ? 'Visitas (últimas 5.000)' : 'Visitas registradas'}</div>
-      </div>
-      <div class="stat-card">
-        <div class="num">${totalLeads}</div>
-        <div class="lbl">Pedidos de orçamento (leads)</div>
-      </div>
-      <div class="stat-card">
-        <div class="num">${taxaGeral}%</div>
-        <div class="lbl">Taxa de conversão geral</div>
-      </div>
-    `;
-
-    // Conversão por campanha: cruza visitas x leads
-    const visitasPorCampanha = countBy(rawVisitas, v => v.utm_campaign || '(sem campanha)');
-    const leadsPorCampanha = countBy(rawLeads, l => l.utm_campaign || '(sem campanha)');
-    const todasCampanhas = [...new Set([...Object.keys(visitasPorCampanha), ...Object.keys(leadsPorCampanha)])];
-    const linhasCampanha = todasCampanhas.map(c => {
-      const v = visitasPorCampanha[c] || 0;
-      const l = leadsPorCampanha[c] || 0;
-      const pct = v ? (l / v * 100) : 0;
-      return { campanha: c, visitas: v, leads: l, pct };
-    }).sort((a, b) => b.leads - a.leads || b.visitas - a.visitas);
-
-    const origensCount = countBy(rawVisitas, v => v.utm_source || hostnameFromReferrer(v.referrer));
-    const topOrigens = Object.entries(origensCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
-
-    const servicosCount = countBy(rawLeads, l => l.servico);
-    const topServicos = Object.entries(servicosCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
-
-    // Destaques: campanha campeã (mais leads) e serviço campeão
-    const highlightEl = document.getElementById('highlightRow');
-    const campanhaCampea = linhasCampanha.find(r => r.leads > 0) || linhasCampanha[0];
-    const servicoCampeao = topServicos[0];
-    const origemCampea = topOrigens[0];
-    highlightEl.innerHTML = `
-      <div class="highlight-badge">
-        <span class="lbl">🏆 Campanha campeã</span>
-        <span class="val">${campanhaCampea ? escapeHtml(campanhaCampea.campanha) : '—'}</span>
-      </div>
-      <div class="highlight-badge">
-        <span class="lbl">🥇 Serviço campeão</span>
-        <span class="val">${servicoCampeao ? escapeHtml(servicoCampeao[0]) : '—'}</span>
-      </div>
-      <div class="highlight-badge">
-        <span class="lbl">📍 Melhor origem</span>
-        <span class="val">${origemCampea ? escapeHtml(origemCampea[0]) : '—'}</span>
-      </div>
-    `;
-
-    gridEl.innerHTML = `
-      <div class="stat-card" style="grid-column:1/-1;">
-        <h4>Campanhas: visitas × leads × conversão</h4>
-        ${linhasCampanha.length ? `
-          <table class="conv-table">
-            <thead><tr><th>Campanha</th><th class="num">Visitas</th><th class="num">Leads</th><th class="num">Conversão</th></tr></thead>
-            <tbody>
-              ${linhasCampanha.map(r => `
-                <tr>
-                  <td>${escapeHtml(r.campanha)}</td>
-                  <td class="num">${r.visitas}</td>
-                  <td class="num">${r.leads}</td>
-                  <td class="num"><span class="conv-badge ${convBadgeClass(r.pct)}">${r.pct.toFixed(1)}%</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        ` : '<p style="color:var(--slate); font-size:0.85rem;">Sem dados suficientes ainda — use links com utm_campaign nas suas divulgações.</p>'}
-      </div>
-      <div class="stat-card">
-        <h4>De onde vêm os visitantes</h4>
-        ${topOrigens.length ? topOrigens.map(([nome, n]) => `
-          <div class="rank-row"><span class="name">${escapeHtml(nome)}</span><span class="count">${n}</span></div>
-        `).join('') : '<p style="color:var(--slate); font-size:0.85rem;">Sem dados ainda.</p>'}
-      </div>
-      <div class="stat-card">
-        <h4>Serviços mais procurados (nos leads)</h4>
-        ${topServicos.length ? topServicos.map(([nome, n]) => `
-          <div class="rank-row"><span class="name">${escapeHtml(nome)}</span><span class="count">${n}</span></div>
-        `).join('') : '<p style="color:var(--slate); font-size:0.85rem;">Nenhum pedido de orçamento registrado ainda.</p>'}
-      </div>
-    `;
+    renderReport(currentPeriod);
   } catch(err){
     overviewEl.innerHTML = '<div class="empty-state">Não foi possível carregar as estatísticas: ' + escapeHtml(err.message) + '</div>';
   }
 }
+
+function renderReport(period, customStart, customEnd){
+  currentPeriod = period;
+  const overviewEl = document.getElementById('statsOverview');
+  const gridEl = document.getElementById('statsGrid');
+  const highlightEl = document.getElementById('highlightRow');
+
+  const { start, end } = dateRangeFor(period, customStart, customEnd);
+  const { start: prevStart, end: prevEnd } = previousRange(start, end);
+
+  const visitas = filterByRange(rawVisitas, start, end);
+  const leads = filterByRange(rawLeads, start, end);
+  const visitasPrev = filterByRange(rawVisitas, prevStart, prevEnd);
+  const leadsPrev = filterByRange(rawLeads, prevStart, prevEnd);
+
+  const totalVisitas = visitas.length;
+  const totalLeads = leads.length;
+  const taxaGeral = totalVisitas ? ((totalLeads / totalVisitas) * 100) : 0;
+  const taxaPrev = visitasPrev.length ? ((leadsPrev.length / visitasPrev.length) * 100) : 0;
+
+  overviewEl.innerHTML = `
+    <div class="stat-card">
+      <div class="num">${totalVisitas}</div>
+      <div class="lbl">Visitas no período</div>
+      ${renderCompareTag(totalVisitas, visitasPrev.length)}
+    </div>
+    <div class="stat-card">
+      <div class="num">${totalLeads}</div>
+      <div class="lbl">Pedidos de orçamento (leads)</div>
+      ${renderCompareTag(totalLeads, leadsPrev.length)}
+    </div>
+    <div class="stat-card">
+      <div class="num">${taxaGeral.toFixed(1)}%</div>
+      <div class="lbl">Taxa de conversão</div>
+      ${renderCompareTag(taxaGeral, taxaPrev)}
+    </div>
+  `;
+
+  // Gráfico diário (só para períodos com mais de 1 dia)
+  const series = buildDailySeries(visitas, leads, start, end);
+  renderChart(series);
+
+  // Conversão por campanha: cruza visitas x leads
+  const visitasPorCampanha = countBy(visitas, v => v.utm_campaign || '(sem campanha)');
+  const leadsPorCampanha = countBy(leads, l => l.utm_campaign || '(sem campanha)');
+  const todasCampanhas = [...new Set([...Object.keys(visitasPorCampanha), ...Object.keys(leadsPorCampanha)])];
+  const linhasCampanha = todasCampanhas.map(c => {
+    const v = visitasPorCampanha[c] || 0;
+    const l = leadsPorCampanha[c] || 0;
+    const pct = v ? (l / v * 100) : 0;
+    return { campanha: c, visitas: v, leads: l, pct };
+  }).sort((a, b) => b.leads - a.leads || b.visitas - a.visitas);
+
+  // Conversão por origem
+  const visitasPorOrigem = countBy(visitas, v => v.utm_source || hostnameFromReferrer(v.referrer));
+  const leadsPorOrigem = countBy(leads, l => l.utm_source || hostnameFromReferrer(l.referrer));
+  const todasOrigens = [...new Set([...Object.keys(visitasPorOrigem), ...Object.keys(leadsPorOrigem)])];
+  const linhasOrigem = todasOrigens.map(o => {
+    const v = visitasPorOrigem[o] || 0;
+    const l = leadsPorOrigem[o] || 0;
+    const pct = v ? (l / v * 100) : 0;
+    return { origem: o, visitas: v, leads: l, pct };
+  }).sort((a, b) => b.pct - a.pct || b.leads - a.leads);
+
+  const topOrigens = Object.entries(visitasPorOrigem).sort((a,b) => b[1]-a[1]).slice(0, 8);
+  const servicosCount = countBy(leads, l => l.servico);
+  const topServicos = Object.entries(servicosCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
+
+  // Destaques
+  const campanhaCampea = linhasCampanha.find(r => r.leads > 0) || linhasCampanha[0];
+  const servicoCampeao = topServicos[0];
+  const origemMelhorConv = linhasOrigem.find(r => r.leads > 0);
+  highlightEl.innerHTML = `
+    <div class="highlight-badge">
+      <span class="lbl">🏆 Campanha campeã</span>
+      <span class="val">${campanhaCampea ? escapeHtml(campanhaCampea.campanha) : '—'}</span>
+    </div>
+    <div class="highlight-badge">
+      <span class="lbl">🥇 Serviço campeão</span>
+      <span class="val">${servicoCampeao ? escapeHtml(servicoCampeao[0]) : '—'}</span>
+    </div>
+    <div class="highlight-badge">
+      <span class="lbl">🎯 Origem com melhor conversão</span>
+      <span class="val">${origemMelhorConv ? escapeHtml(origemMelhorConv.origem) + ' (' + origemMelhorConv.pct.toFixed(1) + '%)' : '—'}</span>
+    </div>
+  `;
+
+  gridEl.innerHTML = `
+    <div class="stat-card" style="grid-column:1/-1;">
+      <h4>Campanhas: visitas × leads × conversão</h4>
+      ${linhasCampanha.length ? `
+        <table class="conv-table">
+          <thead><tr><th>Campanha</th><th class="num">Visitas</th><th class="num">Leads</th><th class="num">Conversão</th></tr></thead>
+          <tbody>
+            ${linhasCampanha.map(r => `
+              <tr>
+                <td>${escapeHtml(r.campanha)}</td>
+                <td class="num">${r.visitas}</td>
+                <td class="num">${r.leads}</td>
+                <td class="num"><span class="conv-badge ${convBadgeClass(r.pct)}">${r.pct.toFixed(1)}%</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      ` : '<p style="color:var(--slate); font-size:0.85rem;">Sem dados no período selecionado.</p>'}
+    </div>
+    <div class="stat-card" style="grid-column:1/-1;">
+      <h4>Origem dos visitantes × conversão</h4>
+      ${linhasOrigem.length ? `
+        <table class="conv-table">
+          <thead><tr><th>Origem</th><th class="num">Visitas</th><th class="num">Leads</th><th class="num">Conversão</th></tr></thead>
+          <tbody>
+            ${linhasOrigem.map(r => `
+              <tr>
+                <td>${escapeHtml(r.origem)}</td>
+                <td class="num">${r.visitas}</td>
+                <td class="num">${r.leads}</td>
+                <td class="num"><span class="conv-badge ${convBadgeClass(r.pct)}">${r.pct.toFixed(1)}%</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      ` : '<p style="color:var(--slate); font-size:0.85rem;">Sem dados no período selecionado.</p>'}
+    </div>
+    <div class="stat-card">
+      <h4>Serviços mais procurados (nos leads)</h4>
+      ${topServicos.length ? topServicos.map(([nome, n]) => `
+        <div class="rank-row"><span class="name">${escapeHtml(nome)}</span><span class="count">${n}</span></div>
+      `).join('') : '<p style="color:var(--slate); font-size:0.85rem;">Nenhum pedido de orçamento no período.</p>'}
+    </div>
+  `;
+}
+
+// Period tabs wiring
+document.querySelectorAll('.period-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const period = tab.dataset.period;
+    document.getElementById('periodCustom').style.display = period === 'custom' ? 'flex' : 'none';
+    if (period !== 'custom') renderReport(period);
+  });
+});
+document.getElementById('periodApplyBtn').addEventListener('click', () => {
+  const s = document.getElementById('periodStart').value;
+  const e = document.getElementById('periodEnd').value;
+  if (!s || !e){ alert('Selecione as duas datas.'); return; }
+  renderReport('custom', s, e);
+});
 
 // ---------- LEADS (mini-CRM) ----------
 const STATUS_LABELS = {
@@ -611,6 +823,7 @@ function openEdit(id, d){
   document.getElementById('f-ordem').value = d.ordem || 1;
   document.getElementById('f-titulo').value = d.titulo || '';
   document.getElementById('f-descricao').value = d.descricao || '';
+  document.getElementById('f-url').value = d.urlDetalhes || '';
   document.getElementById('f-ativo').checked = d.ativo !== false;
   modalStatus.className = 'modal-status';
   formModal.classList.add('open');
@@ -632,6 +845,7 @@ itemForm.addEventListener('submit', async (e) => {
     ordem: parseInt(document.getElementById('f-ordem').value, 10) || 1,
     titulo: document.getElementById('f-titulo').value.trim(),
     descricao: document.getElementById('f-descricao').value.trim(),
+    urlDetalhes: document.getElementById('f-url').value.trim(),
     ativo: document.getElementById('f-ativo').checked,
   };
 

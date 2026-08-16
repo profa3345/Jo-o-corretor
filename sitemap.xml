@@ -16,39 +16,39 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/#listagem-imoveis</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://www.limabuarque.com.br/#contato</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/blog.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://www.limabuarque.com.br/seguro-de-vida</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/blog-financiar-imovel.html</loc>
+    <loc>https://www.limabuarque.com.br/seguro-saude</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/blog-comprar-ou-alugar.html</loc>
+    <loc>https://www.limabuarque.com.br/responsabilidade-civil-profissional</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/blog-documentacao-necessaria.html</loc>
+    <loc>https://www.limabuarque.com.br/previdencia-privada</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.limabuarque.com.br/blog-dicas-vender-imovel.html</loc>
+    <loc>https://www.limabuarque.com.br/consorcio-imobiliario</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.limabuarque.com.br/seguro-cirurgias-amparo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.limabuarque.com.br/privacidade.html</loc>
