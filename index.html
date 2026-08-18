@@ -735,12 +735,8 @@
   <div class="modal-box">
     <button class="modal-close" onclick="closeOrcamento()" aria-label="Fechar">✕</button>
     <h3>Peça o seu orçamento</h3>
-    <p class="sub">Preencha o formulário abaixo e entraremos em contato com você.</p>
+    <p class="sub">Preencha o formulário abaixo — vamos abrir o WhatsApp com sua mensagem pronta pra enviar.</p>
     <form id="orcamentoForm">
-      <!-- IMPORTANTE: troque "COLE_SUA_ACCESS_KEY_AQUI" pela Access Key gerada em web3forms.com -->
-      <input type="hidden" name="access_key" value="COLE_SUA_ACCESS_KEY_AQUI">
-      <input type="hidden" name="subject" value="Novo pedido de orçamento — Lima Buarque">
-      <input type="checkbox" name="botcheck" style="display:none;">
 
       <div class="form-grid">
         <div class="form-field full">
@@ -813,39 +809,50 @@
   const orcamentoStatus = document.getElementById('of-status');
   const orcamentoSubmit = document.getElementById('of-submit');
 
-  orcamentoForm.addEventListener('submit', async (e)=>{
+  const WHATSAPP_NUMBER_ORCAMENTO = '5527998439801';
+
+  orcamentoForm.addEventListener('submit', (e)=>{
     e.preventDefault();
     orcamentoSubmit.disabled = true;
-    orcamentoSubmit.textContent = 'Enviando...';
+    orcamentoSubmit.textContent = 'Abrindo WhatsApp...';
     orcamentoStatus.className = 'form-status';
     orcamentoStatus.textContent = '';
 
-    const formData = new FormData(orcamentoForm);
+    const nome = document.getElementById('of-nome').value.trim();
+    const email = document.getElementById('of-email').value.trim();
+    const telefone = document.getElementById('of-fone').value.trim();
+    const profissao = document.getElementById('of-prof').value.trim();
+    const nascimento = document.getElementById('of-nasc').value.trim();
+    const servico = document.getElementById('of-servico').value.trim();
+    const mensagem = document.getElementById('of-msg').value.trim();
+
     try{
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: formData
-      });
-      const result = await response.json();
-      if(result.success){
-        document.dispatchEvent(new CustomEvent('orcamento-enviado', {
-          detail: {
-            servico: document.getElementById('of-servico').value || null,
-            nome: document.getElementById('of-nome').value || null,
-            email: document.getElementById('of-email').value || null,
-            telefone: document.getElementById('of-fone').value || null,
-          }
-        }));
-        orcamentoStatus.textContent = 'Recebemos seu pedido! Em breve entraremos em contato.';
-        orcamentoStatus.className = 'form-status ok';
-        orcamentoForm.reset();
-        setTimeout(closeOrcamento, 2200);
-      } else {
-        throw new Error(result.message || 'Falha no envio');
-      }
+      const linhas = [
+        '📋 *Novo pedido de orçamento — site*',
+        '',
+        `*Nome:* ${nome}`,
+        `*E-mail:* ${email}`,
+        `*Telefone:* ${telefone}`,
+        profissao ? `*Profissão:* ${profissao}` : null,
+        nascimento ? `*Data de nascimento:* ${nascimento}` : null,
+        `*Serviço de interesse:* ${servico}`,
+        mensagem ? `*Mensagem:* ${mensagem}` : null,
+      ].filter(Boolean).join('\n');
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER_ORCAMENTO}?text=${encodeURIComponent(linhas)}`;
+
+      document.dispatchEvent(new CustomEvent('orcamento-enviado', {
+        detail: { servico: servico || null, nome: nome || null, email: email || null, telefone: telefone || null }
+      }));
+
+      window.open(url, '_blank', 'noopener');
+
+      orcamentoStatus.textContent = 'Abrimos o WhatsApp com sua mensagem pronta — é só enviar por lá!';
+      orcamentoStatus.className = 'form-status ok';
+      orcamentoForm.reset();
+      setTimeout(closeOrcamento, 2500);
     } catch(err){
-      orcamentoStatus.textContent = 'Não foi possível enviar agora. Tente novamente ou chame no WhatsApp.';
+      orcamentoStatus.textContent = 'Não foi possível abrir o WhatsApp. Chame diretamente pelo botão flutuante.';
       orcamentoStatus.className = 'form-status err';
     } finally {
       orcamentoSubmit.disabled = false;
