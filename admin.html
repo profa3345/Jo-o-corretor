@@ -142,6 +142,23 @@
   .lead-status-select.negociacao{background:rgba(184,147,78,0.2); color:var(--gold);}
   .lead-status-select.fechado{background:var(--teal-soft); color:var(--teal);}
   .lead-status-select.perdido{background:var(--red-soft); color:var(--red);}
+
+  .funil-row{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:22px;}
+  .funil-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 10px; text-align:center;}
+  .funil-num{font-family:'Space Grotesk'; font-size:1.5rem; font-weight:700; color:var(--navy-deep);}
+  .funil-lbl{font-size:0.72rem; color:var(--slate); margin-top:2px;}
+  @media(max-width:900px){ .funil-row{grid-template-columns:repeat(3,1fr);} }
+  @media(max-width:560px){ .funil-row{grid-template-columns:repeat(2,1fr);} }
+
+  .lead-resp-input{
+    width:110px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; font-family:'Inter'; font-size:0.8rem;
+    background:var(--paper); color:var(--navy-deep);
+  }
+  .lead-resp-input:focus{outline:none; border-color:var(--gold);}
+  .lead-notes-btn{
+    background:none; border:1px solid var(--line); border-radius:8px; width:32px; height:32px; cursor:pointer; font-size:0.95rem;
+  }
+  .lead-notes-btn:hover{border-color:var(--gold);}
 </style>
 </head>
 <body>
@@ -230,14 +247,32 @@
           <h1>Seguros oferecidos</h1>
           <p>Cadastre, edite, ative/desative ou remova os serviços que aparecem no site.</p>
         </div>
-        <button class="btn btn-primary" style="width:auto;" id="novoBtn">+ Novo serviço</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="importBtn">⬇ Importar os 6 serviços padrão</button>
+          <button class="btn btn-primary" style="width:auto;" id="novoBtn">+ Novo serviço</button>
+        </div>
       </div>
+      <p id="importStatus" style="color:var(--slate); font-size:0.85rem; margin:-8px 0 20px; display:none;"></p>
 
       <div id="listingsArea">
         <div class="loading-state">Carregando serviços...</div>
       </div>
     </div>
   </main>
+</div>
+
+<div class="modal-overlay" id="leadNotesModal">
+  <div class="modal-box" style="max-width:420px;">
+    <button class="modal-close" id="closeLeadNotesBtn">✕</button>
+    <h3 style="font-size:1.1rem;">Observações do lead</h3>
+    <p id="leadNotesName" style="color:var(--slate); font-size:0.85rem; margin:-14px 0 18px;"></p>
+    <textarea id="leadNotesText" rows="6" style="width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-family:'Inter'; font-size:0.9rem;" placeholder="Ex: Cliente pediu retorno na sexta, comparar com a proposta da concorrente..."></textarea>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" id="saveLeadNotesBtn">Salvar</button>
+      <button type="button" class="btn btn-ghost" id="cancelLeadNotesBtn">Cancelar</button>
+    </div>
+    <p class="modal-status" id="leadNotesStatus"></p>
+  </div>
 </div>
 
 <div class="modal-overlay" id="formModal">
@@ -668,12 +703,61 @@ async function loadLeads(){
     const rows = [];
     snap.forEach(docSnap => rows.push({ id: docSnap.id, ...docSnap.data() }));
 
+    // Funil de status
+    const funilCounts = {};
+    Object.keys(STATUS_LABELS).forEach(k => funilCounts[k] = 0);
+    rows.forEach(r => { const s = r.status || 'novo'; funilCounts[s] = (funilCounts[s]||0) + 1; });
+
+    // Conversão por serviço (fechado / total)
+    const porServico = {};
+    rows.forEach(r => {
+      const s = r.servico || '(não informado)';
+      if (!porServico[s]) porServico[s] = { total: 0, fechado: 0 };
+      porServico[s].total += 1;
+      if ((r.status||'novo') === 'fechado') porServico[s].fechado += 1;
+    });
+    const linhasServico = Object.entries(porServico)
+      .map(([servico, d]) => ({ servico, total: d.total, fechado: d.fechado, pct: d.total ? (d.fechado/d.total*100) : 0 }))
+      .sort((a,b) => b.total - a.total);
+
+    const funilHtml = `
+      <div class="funil-row">
+        ${Object.entries(STATUS_LABELS).map(([k,v]) => `
+          <div class="funil-card">
+            <div class="funil-num">${funilCounts[k]}</div>
+            <div class="funil-lbl">${v}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const convServicoHtml = `
+      <div class="stat-card" style="margin-bottom:22px;">
+        <h4>Conversão por serviço (fechado / total)</h4>
+        ${linhasServico.length ? `
+          <table class="conv-table">
+            <thead><tr><th>Serviço</th><th class="num">Leads</th><th class="num">Fechados</th><th class="num">Conversão</th></tr></thead>
+            <tbody>
+              ${linhasServico.map(r => `
+                <tr>
+                  <td>${escapeHtml(r.servico)}</td>
+                  <td class="num">${r.total}</td>
+                  <td class="num">${r.fechado}</td>
+                  <td class="num"><span class="conv-badge ${convBadgeClass(r.pct)}">${r.pct.toFixed(1)}%</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        ` : '<p style="color:var(--slate); font-size:0.85rem;">Sem leads suficientes ainda.</p>'}
+      </div>
+    `;
+
     const wrap = document.createElement('div');
     wrap.className = 'leads-table-wrap';
     wrap.innerHTML = `
       <table class="leads-table">
         <thead>
-          <tr><th>Data</th><th>Nome</th><th>Contato</th><th>Serviço</th><th>Campanha</th><th>Status</th></tr>
+          <tr><th>Data</th><th>Nome</th><th>Contato</th><th>Serviço</th><th>Campanha</th><th>Responsável</th><th>Status</th><th>Obs.</th></tr>
         </thead>
         <tbody>
           ${rows.map(r => `
@@ -683,17 +767,20 @@ async function loadLeads(){
               <td>${escapeHtml(r.telefone || r.email || '—')}</td>
               <td>${escapeHtml(r.servico || '—')}</td>
               <td>${escapeHtml(r.utm_campaign || '(sem campanha)')}</td>
+              <td><input type="text" class="lead-resp-input" data-id="${r.id}" value="${escapeHtml(r.responsavel || '')}" placeholder="—"></td>
               <td>
                 <select class="lead-status-select ${r.status || 'novo'}" data-id="${r.id}">
                   ${Object.entries(STATUS_LABELS).map(([k, v]) => `<option value="${k}" ${((r.status||'novo')===k) ? 'selected' : ''}>${v}</option>`).join('')}
                 </select>
               </td>
+              <td><button type="button" class="lead-notes-btn" data-id="${r.id}" title="Observações">${r.observacoes ? '📝' : '➕'}</button></td>
             </tr>
           `).join('')}
         </tbody>
       </table>
     `;
-    el.innerHTML = '';
+
+    el.innerHTML = funilHtml + convServicoHtml;
     el.appendChild(wrap);
 
     wrap.querySelectorAll('.lead-status-select').forEach(sel => {
@@ -702,9 +789,27 @@ async function loadLeads(){
         sel.className = 'lead-status-select ' + newStatus;
         try{
           await updateDoc(doc(db, 'leads', sel.dataset.id), { status: newStatus });
+          loadLeads();
         } catch(err){
           alert('Erro ao atualizar status: ' + err.message);
         }
+      });
+    });
+
+    wrap.querySelectorAll('.lead-resp-input').forEach(inp => {
+      inp.addEventListener('change', async () => {
+        try{
+          await updateDoc(doc(db, 'leads', inp.dataset.id), { responsavel: inp.value.trim() });
+        } catch(err){
+          alert('Erro ao salvar responsável: ' + err.message);
+        }
+      });
+    });
+
+    wrap.querySelectorAll('.lead-notes-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lead = rows.find(r => r.id === btn.dataset.id);
+        openLeadNotes(lead);
       });
     });
   } catch(err){
@@ -751,6 +856,36 @@ document.getElementById('exportLeadsBtn').addEventListener('click', () => {
     utm_source: l.utm_source, utm_medium: l.utm_medium, utm_campaign: l.utm_campaign, utm_content: l.utm_content,
   }));
   downloadCsv('leads-lima-buarque.csv', toCsv(rows, ['data','servico','referrer','utm_source','utm_medium','utm_campaign','utm_content']));
+});
+
+// ---------- OBSERVAÇÕES DO LEAD ----------
+let currentLeadNotesId = null;
+function openLeadNotes(lead){
+  currentLeadNotesId = lead.id;
+  document.getElementById('leadNotesName').textContent = lead.nome ? `${lead.nome} — ${lead.servico || ''}` : (lead.servico || '');
+  document.getElementById('leadNotesText').value = lead.observacoes || '';
+  document.getElementById('leadNotesStatus').className = 'modal-status';
+  document.getElementById('leadNotesModal').classList.add('open');
+}
+function closeLeadNotes(){
+  document.getElementById('leadNotesModal').classList.remove('open');
+}
+document.getElementById('closeLeadNotesBtn').addEventListener('click', closeLeadNotes);
+document.getElementById('cancelLeadNotesBtn').addEventListener('click', closeLeadNotes);
+document.getElementById('leadNotesModal').addEventListener('click', (e) => {
+  if (e.target.id === 'leadNotesModal') closeLeadNotes();
+});
+document.getElementById('saveLeadNotesBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('leadNotesStatus');
+  try{
+    await updateDoc(doc(db, 'leads', currentLeadNotesId), { observacoes: document.getElementById('leadNotesText').value.trim() });
+    statusEl.textContent = 'Salvo!';
+    statusEl.className = 'modal-status ok';
+    setTimeout(() => { closeLeadNotes(); loadLeads(); }, 600);
+  } catch(err){
+    statusEl.textContent = 'Erro ao salvar: ' + err.message;
+    statusEl.className = 'modal-status err';
+  }
 });
 
 // ---------- LOAD ----------
@@ -803,6 +938,42 @@ function escapeHtml(str){
 
 // ---------- MODAL ----------
 document.getElementById('novoBtn').addEventListener('click', () => openNew());
+
+// ---------- IMPORTAÇÃO EM LOTE (6 serviços padrão) ----------
+const SERVICOS_PADRAO = [
+  { icone: '◆', ordem: 1, titulo: 'Vida Profissional', descricao: 'Ideal para profissionais liberais: médicos, advogados, contadores e outros. Proteção em caso de morte ou invalidez por acidente, com indenização e valor pré-determinado por dias parados por doença ou acidente.', urlDetalhes: '/seguro-de-vida', ativo: true },
+  { icone: '⌂', ordem: 2, titulo: 'Consórcio de Imóveis', descricao: 'Consórcio de Imóvel Porto Seguro, com parcelas a partir de R$ 349,00 sem juros, até 200 meses para pagar, créditos de R$ 55 mil a R$ 500 mil e possibilidade de uso do FGTS.', urlDetalhes: '/consorcio-imobiliario', ativo: true },
+  { icone: '◈', ordem: 3, titulo: 'Seguro de Previdência', descricao: 'Planos VGBL (Vida Gerador de Benefícios Livres) e PGBL (Plano Gerador de Benefícios Livres), unindo previdência e cobertura por morte em um só produto.', urlDetalhes: '/previdencia-privada', ativo: true },
+  { icone: '⚖', ordem: 4, titulo: 'Responsabilidade Civil Profissional', descricao: 'Indicado para médicos, advogados, contadores e outros profissionais liberais. Reembolso de indenização até limite pré-determinado em caso de ação judicial por erro profissional.', urlDetalhes: '/responsabilidade-civil-profissional', ativo: true },
+  { icone: '✚', ordem: 5, titulo: 'Seguro Saúde', descricao: 'Para pessoas físicas e empresas. Cobertura médico-hospitalar através de ampla rede referenciada, com planos que atendem à necessidade de cada cliente.', urlDetalhes: '/seguro-saude', ativo: true },
+  { icone: '🏥', ordem: 6, titulo: 'Seguro Cirurgias + Amparo', descricao: 'Receba uma indenização em dinheiro caso precise realizar um dos mais de 1.200 procedimentos cirúrgicos cobertos. Até R$ 100 mil de capital segurado, sem franquia e sem carência para acidentes.', urlDetalhes: '/seguro-cirurgias-amparo', ativo: true },
+];
+
+document.getElementById('importBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('importBtn');
+  const statusEl = document.getElementById('importStatus');
+  if (!confirm('Isso vai cadastrar os 6 serviços padrão (Vida Profissional, Consórcio, Previdência, RC Profissional, Saúde e Cirurgias). Continuar?')) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+  statusEl.style.display = 'block';
+  statusEl.textContent = '';
+
+  let ok = 0, fail = 0;
+  for (const s of SERVICOS_PADRAO) {
+    try {
+      await addDoc(collection(db, 'seguros'), { ...s, createdAt: serverTimestamp() });
+      ok++;
+    } catch (err) {
+      fail++;
+    }
+  }
+
+  statusEl.textContent = `Importação concluída: ${ok} serviço(s) criado(s)${fail ? `, ${fail} falharam` : ''}.`;
+  btn.disabled = false;
+  btn.textContent = '⬇ Importar os 6 serviços padrão';
+  loadItems();
+});
 document.getElementById('closeModalBtn').addEventListener('click', closeModal);
 document.getElementById('cancelBtn').addEventListener('click', closeModal);
 formModal.addEventListener('click', (e) => { if (e.target.id === 'formModal') closeModal(); });
